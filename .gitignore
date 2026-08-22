@@ -1,0 +1,37 @@
+# Credentials — never commit
+s3_credentials.py
+
+# Processed satellite imagery and video
+*.jpg
+*.png
+*.webm
+*.gif
+
+# Binary executables and libraries (Windows)
+exefiles/*.exe
+exefiles/*.dll
+exefiles/*.zip
+
+# Archives and large data files
+*.tgz
+*.tar
+*.gz
+
+# Auto-updated TLE file (managed by Update_TLE_file)
+userconfig/my_TLE_file.txt
+userconfig/backup/old_TLE_file.txt
+
+# PDF documents (large, available from original sources)
+documents/*.pdf
+
+# Backup directories
+backup/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db

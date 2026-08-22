@@ -1,0 +1,632 @@
+
+========================================================================
+HOWTO install and use PyTroll/SatPy for EUMETCast under Windows 10 64Bit
+========================================================================
+Version 1.0    2020/05/05                              by Ernst Lobsiger
+Version 3.0    2021/01/08                              by Ernst Lobsiger
+
+
+
+PREFACE for Version 3.0
+=======================
+
+Yes, I went straight from Version 1.0 to Version 3.0. The reason is that
+I want to synchronize what I did and do under GNU/Linux with what I offer
+for Windows. There has already been a Version 2.0 for GNU/Linux though it
+probably was too technical and found little attention. My Version 3.0 is
+different and almost accepts that we now might even have some users under
+GNU/Linux that are horrified as much as Windows users when "geeks" talk
+about the Command Line Interface (CLI). This in new in my Version 3.0:
+
+a) All Python scripts have been almost fully rewritten. The difference
+   between Windows and GNU/Linux versions has further been minimized.
+b) All scripts have the same look and feel. They make just one image for
+   a given set of parameters. All images are IM annotated the same way.
+   If you do not want that (e.g. for publications) you always find the
+   latest pure image as lossless *.png in the respective tmp directory.
+c) Parameters can all be chosen in a parameter section. This should
+   even give those users more possibilities that refuse to learn Python.
+d) I have learnt some more Python myself. So the code should look more
+   like Python and less like old "Spaghetti Basic" popular in the 1980s.
+   I use now '' quotes whenever possible though Python also accepts "".
+e) There is now minimal error checking and debug output from the scripts.
+f) I have added some advanced scripts using still experimental MultiScene.
+g) Every single script can output thousands of different images even of
+   the same area. I added a chapter that tells you how to deal with this.
+h) I added a chapter about debugging which might be the most dreadful for
+   Windows users. A meaningful text file replaces dozens of screen shots.
+i) I now use a unified image file name that contains the main settings:
+
+   Name_of_the_Satellite-YYYYmmDD-TypeOfTime-HHMM-composite-area.jpg
+
+   For GEO satellites TypeOfTime is 'SLO' which means the time slot in UTC.
+   For LEO satellites TypeOfTime is either 'DAY' or 'NIG' that indicates
+   whether the image has been taken on the dayside or the night side of an
+   orbit. HHMM then represents UTC time of the satellites closest approach
+   to the set Point Of Interest (POI) which also means maximum elevation.
+
+
+
+
+0) DISCLAIMER
+-------------
+
+I normally use GNU/Linux for any kind of serious/scientific application.
+I have never installed or used a Windows TelliCast receiver up to now.
+My Windows 10 PRO 64Bit install dates from last spring. That said I have
+no deep knowledge of Windows 10 and close to none of its Power Shell.
+
+Every TelliCast receiver PC is different notably in the number of disks
+and how received data is organized. This means you may have to adapt
+different data paths. This HOWTO uses C: (it's a small SSD here), D:
+(it's a medium size HDD) and Z: (it's a big SAMBA share from one of my
+GNU/Linux receivers). But it's possible to work with one big C: only.
+C: and D: can also be just partitions of one big physical hard drive.
+
+I use a generic Windows user ("username") and I try to get as minimum
+Windows integration as possible. I provide two zip files EMCtools.zip
+and EMCdata.zip that are meant to be decompressed on top of the system
+disk C: and the data disk D:. They contain the file structures I use.
+
+This PyTroll/SatPy starter kit does not interfere with any kind of
+data manager you use for your satellite data. My Z: is read only.
+
+*********************************************************************
+* BUT OF COURSE: WHATEVER YOU DO NOW IS ON YOUR OWN RISK AND PERIL! *
+*********************************************************************
+
+
+
+
+1) INTRODUCTION
+---------------
+
+SatPy is still in development. It's the highest integration of
+other PyTroll packages to read, process and store satellite data.
+
+https://pytroll.github.io
+
+PyTroll/SatPy is now used by a couple of European met offices 24/7
+and projects like https://www.ssec.wisc.edu/software/polar2grid have
+joined. As an EUMETCast amateur you can benefit from this effort.
+
+
+If you are new to SatPy (and Python as I was!) a big problem was the
+rather sparse documentation. So already an installation of a working
+PyTroll environment meant a steep learning curve. Much of my try and
+error that lead to the recommendations below has been done with both
+Debian 9 (Stretch) and Devuan 2 (ASCII, which is Debian systemd free).
+
+As most EUMETCast users have TC receivers with Windows 10, I invested
+a couple of days to get some of my Python scripts working on this OS.
+This finally lead to a kind of starter kit for Windows EUMETCast users.
+This version 1.0 kit was published in message #29367 on the MSG-1 list.
+
+Shortly after this publication there were a couple of important new
+additions to SatPy, notably a much improved interface for overlays like
+coastlines, borders, rivers, geographic grids, and points of interest.
+
+I went back to GNU/Linux and have now further improved my scripts under
+Debian 10 (Buster) and Devuan 3 (Beowulf). As these scripts are written
+in Python, there is just a couple of OS specific differences between
+GNU/Linux and Windows 10. Those differences have been edited by hand in
+Version 1.0 scripts. They will later be taken care of by a stream editor.
+
+I take the CLI perspective as usual. If you are not afraid of a command
+prompt, know how to use the Windows Editor and accept that a script is
+a pure text file (even if UTF8 introduces some Voodoo again) read on.
+
+
+
+
+2) Installation of Miniconda3 with PyTROLL/Satpy under WINDOWS 10 PRO 64Bit
+---------------------------------------------------------------------------
+We only take small Miniconda3 as a full blown Anaconda3 is just bloatware.
+
+
+2.1.) Download the Miniconda3 installer (situation 2020/12/28)
+--------------------------------------------------------------
+
+https://docs.conda.io/en/latest/miniconda.html
+
+Python 3.8 	Miniconda3 Windows 64-bit 	57.0 MiB
+
+copy and paste the SHA256 hash (to check later your file is intact)
+4fa22bba0497babb5b6608cb8843545372a99f5331c8120099ae1d803f627c61
+
+The *.exe goes to the users Downloads directory.
+
+
+2.2) Check the SHA256 hash
+--------------------------
+
+Search for CMD at lower left and attach this App (prompt >) to the task bar or menu.
+
+Open this command prompt black window (remember DOS 3.3 ??) and enter "cd Downloads"
+(without "") and press Enter and you should be in directory Downloads. The prompt has
+command completion that you can invoke with the Tab key. Enter "dir Mini*", press Enter
+and you should see the file "Miniconda3-latest-Windows-x86_64.exe" just downloaded. You
+also have a command history that you can browsed with the UP and DOWN arrow keys ...
+
+Type "certutil -hashfile Miniconda3-latest-Windows-x86_64.exe SHA256" press Enter.
+
+This should issue exactly the hash from above.
+
+4fa22bba0497babb5b6608cb8843545372a99f5331c8120099ae1d803f627c61
+
+Let's do it once more using the "command line completion" feature of cmd.exe.
+
+Type "certutil -hashfile Mini" and press the Tab key, if it works you have now the
+line completed to "certutil -hashfile Miniconda3-latest-Windows-x86_64.exe" add the
+missing "SHA256" and press Enter. Command line completion is handy in a number of
+cases like "dir" finding one special segment file in many with almost identical names
+or "cd" diving down ito one of these very long Miniconda3 pathes that leed to SatPy.
+
+Of course what we just did should again issue exactly the hash from above.
+
+4fa22bba0497babb5b6608cb8843545372a99f5331c8120099ae1d803f627c61
+
+If not something went wrong, Miniconda3-latest-Windows-x86_64.exe might be damaged!
+
+If you miss typed something use the UP to recall the command, fix it and press Enter.
+
+WARNING: If you enter "python" at a pure command prompt or in a Power Shell this
+might open a graphics window to let you install Python from the Microsoft Store.
+* DON'T DO THAT! IT'S ABOUT THE CRAZIEST THING I HAVE SEEN IN WINDOWS 10 SO FAR.*	
+
+
+2.3) Installation of Miniconda3 and PyTroll/SatPy
+-------------------------------------------------
+
+This method can completely be done by an unprivileged user in his home
+directory. Installation is very easy, every help is found on anaconda.com.
+
+Installation by an unprivileged user is started clicking the installer.
+* DO NOT INSTALL MINICONDA FOR MULTIPLE USERS WITH ADMIN PRIVILEGES!*
+
+- Accept the license (you have no choice)
+- Just Me (as recommended)
+- C:\Users\username\Miniconda3  (Space required 258.4MB)
+- TAKE ADVANCED OPTIONS AS PROPOSED 
+  Add to my PATH ... NO
+  Register Miniconda3 ... YES
+- Bookmark Tutorials and Links ... YES 
+- Finish install
+
+Go to your start menu where you find two new Anaconda (64-bit) entries
+a) "Anaconda Powershell Prompt (miniconda3)" starts Powershell
+b) "Anaconda Prompt (miniconda3)" starts with CMD ("DOS" window)
+
+Start Miniconda with CMD Prompt (a black CMD Window should
+open with a prompt "(base) C:\Users\username>")
+
+Your installer and "Swiss Army Knife" is now the command conda.
+There is no manual page but conda has a lot of help built in.
+
+Let's update basic stuff and conda to the very latest versions first:
+
+At the prompt "(base) C:\Users\username>" (Basic Environment) enter
+conda update -n base -c defaults conda
+
+The SatPy documentation says that you have to add conda-forge as repository.
+At the prompt "(base) C:\Users\username>" (in Basic Environment) enter
+conda config --add channels conda-forge
+
+Now we create a special environment for pytroll with the command
+conda create --name pytroll
+
+NOTE: If you do not activate environment pytroll before installing
+packages then these packages will all go to the (base) environment.
+THEREFORE ACTIVATE pytroll BEFORE INSTALLING PYTROLL/SATPY STUFF:
+
+conda activate pytroll
+
+This will change your path and your prompt will have (pytroll) in front.
+Activation in one user terminal does not activate in another terminal !!
+
+Anaconda packages are differently packed from pip packages. To make all
+my PyTroll/SatPy image generation scripts run I just had to (be pacient):
+
+(pytroll) C:\Users\username> conda install satpy
+(pytroll) C:\Users\username> conda install pycoast
+(pytroll) C:\Users\username> conda install pyhdf
+
+The packages installed above are now found under a rather lengthy path:
+C:\Users\username\miniconda3\envs\pytroll\Lib\site-packages\...
+
+A command "conda list satpy" should at least indicate version 0.24. You will
+not have to update for about half a year (*Never touch a running system!*).
+ 
+To close the window you may enter "conda deactivate" to get the normal prompt.
+Then type "exit" or just close the window top right clicking the close button.
+
+BACKGROUND INFO:
+
+Activating and deactivating essentially changes your path variable. This
+is where Windows searches for executable commands you type at the prompt.
+
+You can check that while in different environments in the following way:
+
+(pytroll) C:\Users\username> echo %path%
+(base) C:\Users\username> echo %path%
+C:\Users\username> echo %path%
+
+
+
+
+3) Unzip the data structures used for this HOWTO
+------------------------------------------------
+
+EMCtools.zip goes on top of system disk C:
+After decompression you should have a directory C:\EMCtools with subdirectories.
+C:\EMCtools\exefiles contains some additional command line programs used in this
+distribution. There is absolutely no Windows integration spoiling the registry!
+
+EMCdata.zip goes on top of data disk D:
+After decompression you should have a directory D:\EMCdata with subdirectories
+
+Everybody should have a C: to put directory C:\EMCtools on top as described.
+If you prefer something else for D:\EMCdata you will have to edit a couple of
+drive letters in my Python scripts. C:\EMCdata is possible but not recommended
+unless you have a recent PC with one monster SSD or an old PC with a single HDD. 
+
+If you insist for whatever reason to put EMCtools and/or EMCdata in subdirectories
+you can do so with no blanks in the data path. F:\I must have it here\EMCtools is
+an absolute *NO-GO* while G:\I_must_have_it_here\EMCtools is acceptable but will
+cause some extra editing needed in every of my scripts before you can start those.
+The only case I see this useful is when you already have installed the Version 1.0
+kit and want to keep this working while you make your first steps with Version 3.0.
+You would then probably prefer to install EMCtools in C:\V30 and EMCdata in D:\V30.
+
+
+
+
+4) Get the shorelines, rivers and borders
+-----------------------------------------
+
+Go to
+
+http://www.soest.hawaii.edu/wessel/gshhg/
+
+gshhs and wdb files are part of GSHHG. Current version is GSHHG-2.3.7.
+We need the native shape files that come in different resolutions and
+can all be downloaded on the bottom of the page above. Look for the link:
+
+CAUTION: Do not take the binary files as used by Hugo in EUMETCastView!
+
+
+"
+For ESRI shapefiles of shoreline polygons, rivers, and borders you can choose to get via ftp or http:
+
+    FTP: GSHHG coastlines, political borders and rivers in shapefile format (zip archive)
+    HTTP: GSHHG coastlines, political borders and rivers in shapefile format (zip archive)
+"
+
+You should get a file named gshhg-shp-2.3.7.zip
+
+Extract archive gshhg-shp-2.3.7.zip into directory D:\EMCdata\gshhg-shp
+Get the file names and sizes from the output of "dir gshhg-shp" on my PC:
+
+Verzeichnis von D:\EMCdata\gshhg-shp
+
+26.04.2020  13:08    <DIR>          .
+26.04.2020  13:08    <DIR>          ..
+22.01.2014  05:40             7’816 COPYING.LESSERv3
+26.04.2020  13:08    <DIR>          GSHHS_shp
+22.01.2014  05:40             1’375 LICENSE.TXT
+15.06.2017  05:11            15’350 README.TXT
+01.04.2016  22:21             2’590 SHAPEFILES.TXT
+26.04.2020  13:08    <DIR>          WDBII_shp
+
+Verzeichnis von D:\EMCdata\gshhg-shp\GSHHS_shp
+
+26.04.2020  13:08    <DIR>          .
+26.04.2020  13:08    <DIR>          ..
+26.04.2020  13:08    <DIR>          c
+26.04.2020  13:08    <DIR>          f
+26.04.2020  13:08    <DIR>          h
+26.04.2020  13:08    <DIR>          i
+26.04.2020  13:08    <DIR>          l
+15.06.2017  05:30            15’350 README.TXT
+
+Verzeichnis von D:\EMCdata\gshhg-shp\WDBII_shp
+
+26.04.2020  13:08    <DIR>          .
+26.04.2020  13:08    <DIR>          ..
+26.04.2020  13:08    <DIR>          c
+26.04.2020  13:08    <DIR>          f
+26.04.2020  13:08    <DIR>          h
+26.04.2020  13:08    <DIR>          i
+26.04.2020  13:09    <DIR>          l
+15.06.2017  05:31            15’350 README.TXT
+
+
+The subdirectory names stand for line resolution of coastlines/boundaries.
+
+f    full resolution: Original (full) data resolution.
+h    high resolution: About 80 % reduction in size and quality.
+i    intermediate resolution: Another ~80 % reduction.
+l    low resolution: Another ~80 % reduction.
+c    crude resolution: Another ~80 % reduction.
+
+Resolution can be chosen later in PyTroll/SatPy scripts that include coastlines.
+GSHHG shapes are further organized in "Levels". You will have to remember that
+if you want to picture overlay the shorelines of "Lake Geneva" or "Loch Ness".
+
+
+
+
+5) Environment variables
+------------------------
+
+When started Pytroll/SatPy is looking for two important environment variables:
+
+a) The Path and name of the wavelet decompression tool xRITDecompress.exe
+This variable is called XRIT_DECOMPRESS_PATH and must only be set if you
+rely on a recent feature of SatPy to automatically decompress xrit files.
+It should be XRIT_DECOMPRESS_PATH=C:/EMCtools/exefiles/xRITDecompress.exe
+This was not available when I started my scripts. I use my own decompression
+script code and therefore you can forget about XRIT_DECOMPRESS_PATH for now.
+
+b) SatPy is also looking for an environment variable named PPP_CONFIG_DIR.
+In this directory you manage your own configuration files locally. This is
+really recommended if you begin to experiment with your own map projections.
+Those are defined in file areas.yaml where I added westminster, isleofman,
+cyprus, ... This variable *must* be set PPP_CONFIG_DIR=C:/EMCtools/pppconfig
+
+The original default areas are found under the lengthy path (don't change those!):
+C:\Users\username\miniconda3\envs\pytroll\Lib\site-packages\satpy\etc\areas.yaml
+
+Environment variables can be added/set for your user account by searching bottom left for "ENV".
+Then you permanently add the variable name and variable value to your personal environment only.
+(**DO NOT CHANGE OR DELETE OTHER ENVIRONMENT VARIABLES AND DO NOT TOUCH THE SYSTEM VARIABLES**.)
+
+Of course they can also be set at the command prompt after opening a black Miniconda3 window:
+set PPP_CONFIG_DIR=C:/EMCtools/pppconfig
+As long as the black Miniconda3 window stays open, this environment variable is now known.
+
+Finally they can be set easily in batch files before the Python scripts are invoked:
+set PPP_CONFIG_DIR=C:/EMCtools/pppconfig
+
+
+
+
+6) Working with my EUMETCast PyTroll/SatPy scripts
+--------------------------------------------------
+
+There are three scripts directories. GEOscripts contains all scripts for geostationary
+satellites. LEOscripts contains all scripts for polar orbiting satellites. USRscripts
+is where you will work. I propose to use GEOscripts and LEOscripts just as archives.
+
+Let's e.g. start with Meteosat-11 also known as MSG4. Copy file MSG4.py from GEOscripts to
+USRscripts. In directory USRscripts double click MSG4.py and it should automatically open
+in the Windows Editor. If this does not happen for unknown reasons you find the Editor
+buried deep down in the Windows Accessories and tell him to open *.py files automatically.
+
+Before you can start any of the Python scripts you *HAVE TO* edit the variable "segdir"
+inside. That's where you have the data segments/files received for the satellites at hand.
+My TC receivers provide satellite files in a Z:/EUMETCastChannel/YEAR/MONTH/DAY structure.
+If you use Hugo's marvellous program EUMETCastView and also run EUMETCastWatcher 24/7 you
+should find a similar data structure. If you have a more bulk data structure with segments
+from recent few days in a DRIVE:/PATH/EUMETCastChannel directory this should work as well.
+Again your segdir should not contain any blanks (spaces) or evil might be round the corner.
+Different from real satellite data managers my scripts do not know when the files arrive.
+If you ask early in the morning for an image today 12:00 the files will just not be found.
+
+If you installed EMCtools on top of C: and EMCdata on top of D: and you adapted segdir
+for MSG4 files you are already done! Otherwise two more lines might have to be adapted:
+
+toodrp = 'C:'    is the drive (and path) where you installed EMCtools (per default 'C:').
+datdrp = 'D:'    is the drive (and path) where you installed EMCdata  (per default 'D:').
+
+So if you insisted to make it complicated you must now edit these lines to something like:
+
+toodrp = 'E:/I_want_tools_here'           Note the forward slash / but never a trailing /!
+datdrp = 'F:/I_want_data there'           Note the forward slash / but never a trailing /!
+
+For what follows below I assume you made the install as proposed on top of drive C: and D:
+
+Start "Anaconda Prompt (miniconda3)" from the menu (a black CMD Window should
+open with a prompt "(base) C:\Users\username>")
+
+ACTIVATE pytroll by entering "conda activate pytroll"
+your prompt is now "(pytroll) C:\Users\username>"
+
+
+Change to where you have your script with "cd C:\EMCtools\USRscripts". Command completion
+comes in handy and your prompt should now look like "(pytroll) C:\EMCtools\USRscripts>".
+
+All scripts are started with "python YourScript.py parameter"
+
+Parameter is normally a date or datetime string as explained in the script comment header.
+
+For Meteosat-11 it's something like "python MSG4.py 202101061200"
+
+There will be a lot of warning output in the CMD window. Normally you can just ignore it.
+
+If you got your first image you will find it in EMCdata. Now play around with this MSG4.py
+changing parameters like composite and area until you have the result you are looking for.
+If this happens to be composite 'realistic_colors' and area 'westminster' I propose you
+rename your tuned copy in USRscripts from MSG4.py to MSG4-realistic_colors-westminster.py.
+Of course you can invent "any_other_name.py" because the script doesn't care about its name.
+
+You noticed westminster wasn't known as area? You probably cheated and let out point 5)!
+
+Before you start working with LEOscripts you must check the age of the "my_TLE_file.txt" 
+in directory ..\EMCtools\pppconfig. If it's more than one month old you should update it.
+There is a file "Update_TLE_file.cmd" in directory ..\EMCtools\cmdfiles that does the job.
+
+CAUTION: Do only use caching if you know what you do. This is an advanced feature that
+is useful if you have final designs of images that you produce daily with a scheduler.
+
+
+
+
+7) Debugging when things go wrong
+---------------------------------
+
+There are 3 levels of debugging information. First of all there is the Python
+interpreter itself that is very noisy talking about this and that as soon as
+you start your script. If things don't work Python might already tell you why.
+So in case of problems please read and try to understand what Phyton tells you.
+
+There is a second level of debugging that can be activated in SatPy code. You
+have to use an Editor again. All scripts have three lines not far from the top:
+
+# Why to hell is it not working?
+# from satpy.utils import debug_on
+# debug_on()
+
+# is a character that starts a comment just for users and ignored by Phyton.
+
+If you uncomment (delete the # and make the code flush left) the above to
+
+# Why to hell is it not working?
+from satpy.utils import debug_on
+debug_on()
+
+Phyton has two more lines of code that switch on the internal SatPy debugging.
+
+One special feature of Python is the meaning of indents. These are used to mark
+begin and end of code blocks: *THOU SHOUDEST NOT MESS WITH INDENTS IN PYTHON*!
+If the two lines are not flush left as shown below you added another problem.
+
+# Why to hell is it not working?
+ from satpy.utils import debug_on
+ debug_on()
+
+There is one more thing you always *must* remember: Python like GNU/Linux and
+unlike Windows is case sensitive. DEBUG.txt and debug.txt are different files.
+And YES: The Python interpreter understands debug_on() but never debug_ON().
+
+If you did this right you get additional info what SatPy actually does and where
+and why it stops. Again try to read and understand, it's pure English after all.
+
+The third level of debugging is the script that tells you why it stopped or
+that should at least tell you what list of segment files it has been given.
+
+If you cannot read the debug information that flashes over the terminal or scroll
+back in your Miniconda3 window you must redirect it into a text file as described
+below. Then take a cup of coffee and read the file twice before you ask for help.
+
+That's what we do (in UNIX since 50 years, copied by MS-DOS, still in Windows 10):
+
+python script.py param  > DEBUG.txt         The script output goes to DEBUG.txt
+python script.py param  1> DEBUG.txt        This is exactly the same as above !
+
+python script.py param  2> DEBUG.txt        The other output goes to DEBUG.txt
+python script.py param  > 2>&1 DEBUG.txt    The Full Monty will go to DEBUG.txt
+
+There is a special file called "nul" that works as a black hole sucking all in
+
+python script.py param  2> nul              Just the script will have a say
+python script.py param  > nul 2>&1          All text output will just vanish
+
+
+For more info about above lines google for "Windows redirection stdout stderr".
+
+And here is my point: If you cannot find the problem after having read all
+info and double checked your segdir path and "The Full Monty" DEBUG.txt then
+send this latter file to your local PyTroll/SatPy guru or post it on MSG-1.
+
+
+
+
+8) Batch processing using CMD.exe
+---------------------------------
+
+From good old DOS 3.3 we remember batch files. These were text files named with
+suffix bat (MyBatch.bat) storing commands interpreted by the shell COMMAND.com.
+These files still work but the command interpreter (shell) is now CMD.exe and
+has by far more possibilities. Batch files should therefore better be named with
+suffix cmd (MyBatch.cmd). And *YES* CMD.exe is deprecated too but after all still
+somewhere. That's why you have to search for CMD on a fresh Windows 10 install.
+
+NOTE: My batch files are named with suffix cmd and inside I use fake labels "::"
+instead of "REM" for comment lines. This is much faster but tricky inside for-loops.
+If you double click on a *.bat or *.cmd it will run. If you right click you can edit it.
+
+Batch processing is mainly used with a scheduler. You want the system to automatically
+produce certain images every day unattended. One problem you have with Miniconda3 is
+that a batch file should activate your (pytroll) environment before calling the python
+script. Fortunately Miniconda3 provides a batch file that can be used for activation.
+
+You find two batch files intended for daily Suomi_NPP, Noaa-20, MSG4 images of the UK.
+
+I let it as a user exercise to find out when the corresponding data is due to arrive.
+It has to do with LTAN/LTDN, the lat/lon position of the POI and the EARS timeliness.
+
+If you want to use a scheduler look for "taskschd" in the search window bottom left.
+You can stick that to your task bar or start menue if you have not already done so.
+It's a Windows 10 application I have never used. Under GNU/Linux I'm happy with cron. 
+ 
+
+
+
+9) Where do we go from here
+---------------------------
+
+You certainly already changed the 'TBS-6909X' to your receiver name. Did you?
+
+What readers are available? Have a look (but don't screw up) here:
+C:\Users\username\miniconda3\envs\pytroll\Lib\site-packages\satpy\readers
+
+What composites need what instrument channels? Find answers here:
+C:\Users\username\miniconda3\envs\pytroll\Lib\site-packages\satpy\etc\composites
+
+Learn more Python. You will find every possible help on the internet.
+
+If you have not already RTFM go to this link and do it:
+https://satpy.readthedocs.io/en/latest/
+
+Read and maybe join, ask and contribute here:
+https://groups.google.com/forum/#!forum/pytroll
+
+Learn more about conda. There is no automatic update of your PyTroll/SatPy packages.
+
+Read the scrips of other PyTroll/SatPy enthusiasts and share your own code.
+Windows users should help other Windows users (I want to go back to GNU/Linux).
+
+If you begin to work with the code you should use a better Editor. You do not
+need a fully integrated development environment. But this Editor should at
+least have syntax highlighting for Python. Please have a look at NOTEPAD++.
+
+https://notepad-plus-plus.org/
+
+There is a 64Bit minimalistic (portable) version you just have to decompress.
+Don't forget to set the (programming) language to P/Python after first start.
+
+ 
+
+
+10) Uninstallation of the whole stuff
+------------------------------------
+
+Uninstallation of Miniconda3 is accomplished via the Windows control panel. You may
+have to clean out by hand Anaconda Menu entries and in your Windows home directory
+C:\Users\username the small file .condarc and the two directories .conda and .config.
+Then with the Windows Explorer you just delete directories C:\EMCtools and D:\EMCdata.
+If you have permanently set PPP_CONFIG_DIR=C:/EMCtools/pppconfig you can erase it now.
+
+
+**************************************************************************************
+Windows Pytroll/Satpy HOWTO V 3.0. I will not consider a next release until at least
+50 Windows or GNU/Linux EUMETCast users report success with PyTroll/SatPy. And like
+David Taylor I'd love to read a PyTroll/SatPy article in the GEO Quarterly journal.
+But this must be written in clean English by a Windows 10 EUMETCast user in the U.K..
+
+Belp, Oase 2021/01/08                                                   Ernst Lobsiger
+**************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+

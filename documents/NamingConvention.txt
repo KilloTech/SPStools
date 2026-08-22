@@ -1,0 +1,61 @@
+PyTROLL/SatPy for EUMETCast Version 4.1
+---------------------------------------
+
+After starting to automate many scripts from the Satpy Starter Kit 3.0 with cron
+it became evident, that a more stringent satellite naming convention is needed.
+SatPy has heavily updated areas.yaml using underlines '_' in names. Underlines
+are also used in composite names. That's why I now use hyphens '-' to separate
+different parts of product names. Under GNU/Linux I use flock() to prevent two
+scripts of the same satellite to run in parallel and possibly interfere as there
+is only *ONE* tmp directory per satellite. My bash script to start PyTROLL/SatPy
+scripts with flock() relies on being able to get a short satellite name in front
+of the first '-'. Generally I now apply (common) short satellite names without
+'-' and long satellite names that may contain a '-' as found in platforms.txt.
+Long satellite names are *ONLY* used by SatPy in LEO orbit calculations (where
+the TLEs are identified using platforms.txt) and by my scripts in image legends.
+
+GEO (short)     script                tmp dir     cache dir    product dir     file name
+
+MSG2            MSG2-area.py          xmsg2       cmsg2        MSG2            MSG2
+MSG3            MSG3-area.py          xmsg3       cmsg3        MSG3            MSG3
+MSG4            MSG4-area.py          xmsg4       cmsg4        MSG4            MSG4
+GOES16          GOES16-area.py        xgoes16     cgoes16      GOES16          GOES16
+GOES17          GOES17-area.py        xgoes17     cgoes17      GOES17          GOES17
+GOES18          GOES18-area.py        xgoes18     cgoes18      GOES18          GOES18
+HIMA8           HIMA8-area.py         xhima8      chima8       HIMA8           HIMA8
+
+
+LEO (short)     LEO script            tmp dir     chache dir   product dir     file name
+
+Aqua            Aqua-area.py          xaqua       caqua        Aqua            Aqua
+Terra           Terra-area.py         xterra      cterra       Terra           Terra
+MetopB          MetopB-area.py        xmetopb     cmetop       MetopB          MetopB
+MetopC          MetopC-area.py        xmetopc     cmetopc      MetopC          MetopC
+MetopX          MetopX-area.py        xmetopx     cmetopx      MetopX          MetopX
+Sen3A           Sen3A-area.py         xsen3a      csen3a       Sen3A           Sen3A
+Sen3B           Sen3B-area.py         xsen3b      csen3b       Sen3B           Sen3B
+Sen3X           Sen3X-area.py         xsen3x      csen3x       Sen3X           Sen3X
+NOAA20          NOAA20-area.py        xnoaa20     cnoaa20      NOAA20          NOAA20
+SNPP            SNPP-area.py          xsnpp       csnpp        SNPP            SNPP
+NOAAX           NOAAX-area.py         xnoaax      cnoaax       NOAAX           NOAAX
+FY3D            FY3D-area.py          xfy3d       cfy3d        FY3D            FY3D
+
+User scripts must be configured and put into GEOscripts or LEOscripts renamed with area.
+User defined areas should be lower case amd may contain underlines '_' but no hyphens '-'.
+
+Examples: SNPP-switzerland.py,  GOES16-samerica5km.py, GOES18-namerica5km.py, HIMA8-japan.py
+
+
+A lot of SatPy new seviri definitions are now far too long for my legend at left.
+In the (SatPy V 0.38) distributed areas.yaml some are found to be "superseded".
+seviri_0deg:  # superseded by msg_seviri_fes_3km
+seviri_iodc:  # superseded by msg_seviri_iodc_3km
+The same problem for GOES16 and GOES17. Some MTG area definitions already exist.
+
+I avoid the use of these new long area definitions by using my own definitions:
+*******************************************************************************
+Please check the private areas.yaml file that is distributed with V 4.1 scripts.
+The use of 'full_scan' for GEO sats and 'swath' for LEO sats has been abandoned.
+
+
+2022/12/10                                                       Ernst Lobsiger

@@ -1,0 +1,204 @@
+Auflistung der Ordnerpfade
+Volumeseriennummer : 0000009E 322C:9DCE
+C:\SPSTOOLS
++---cmdfiles
+|   |   cron-timetable.txt
+|   |   cron.cmd
+|   |   cronalyzer.py
+|   |   DWD-overlays.cmd
+|   |   DWDSAT-overlays.py
+|   |   OPC-overlays.cmd
+|   |   tidy.cmd
+|   |   UKMO-overlays.cmd
+|   |   Update_TLE_file.py
+|   |   webm.cmd
+|   |   
+|   +---backup
+|   |       cron-timetable.txt
+|   |       cron.cmd
+|   |       cronalyzer.py
+|   |       DWD-overlays.cmd
+|   |       DWDSAT-overlays.py
+|   |       OPC-overlays.cmd
+|   |       tidy.cmd
+|   |       UKMO-overlays.cmd
+|   |       Update_TLE_file.py
+|   |       webm.cmd
+|   |       
+|   \---schedules
+|           CRON.xml
+|           TIDY.xml
+|           WEBM.xml
+|           
++---DEVscripts
+|       Aqua-area.py
+|       GEOstuff.py
+|       LEOstuff.py
+|       MetopX-area.py
+|       MSG4-NWCSAF-area.py
+|       
++---documents
+|       Copernicus_Data_Policy.pdf
+|       Eumetsat_Data_Policy.pdf
+|       ffmpeg-oneliners.txt
+|       gpl-3.0.txt
+|       NamingConvention.txt
+|       SatPy_ HOWTO_V30.txt
+|       Satpy_Caching.txt
+|       SatPy_for_EUMETCast_HOWTO_V41.txt
+|       SPSdata-tree.txt
+|       SPStools-Windows-tree.txt
+|       
++---exefiles
+|       7za.exe
+|       colors.xml
+|       convert.exe
+|       cyggcc_s-seh-1.dll
+|       cygstdc++-6.dll
+|       cygwin1.dll
+|       ffmpeg.exe
+|       identify.exe
+|       policy.xml
+|       policy.xml.dist
+|       README.txt
+|       type.xml
+|       wget.exe
+|       xRITDecompress-for-Windows.zip
+|       xRITDecompress.exe
+|       
++---GEOscripts
+|   |   GEOstuff.py
+|   |   GOES16-caribbean.py
+|   |   GOES16-goes_ef_rss.py
+|   |   GOES16-MSLP-opcaw.py
+|   |   GOES18-goes_wf_rss.py
+|   |   GOES18-MSLP-opcpe.py
+|   |   HIMA8-hima_f_rss.py
+|   |   HIMA8-MSLP-opcpw.py
+|   |   MSG2-afghanistan.py
+|   |   MSG2-msg_ioc_rss.py
+|   |   MSG3-isomrss.py
+|   |   MSG3-oaserss.py
+|   |   MSG4-msg_fes_rss.py
+|   |   MSG4-MSLP-dwdx.py
+|   |   MSG4-MSLP-opcae.py
+|   |   MSG4-MSLP-ukmox.py
+|   |   MSG4-westminster.py
+|   |   
+|   \---GEOarchive
+|           GEOstuff.py
+|           GOES16-area.py
+|           GOES16-MSLP-area.py
+|           GOES17-area.py
+|           GOES17-MSLP-area.py
+|           GOES18-area.py
+|           GOES18-MSLP-area.py
+|           HIMA8-area.py
+|           HIMA8-MSLP-area.py
+|           MSG2-area.py
+|           MSG4-area.py
+|           MSG4-MSLP-area.py
+|           MSG4-NWCSAF-area.py
+|           MTI1-area.py
+|           
++---LEOscripts
+|   |   Aqua-eurol.py
+|   |   Aqua-isleofman.py
+|   |   FY3D-svalbard.py
+|   |   LEOstuff.py
+|   |   MetopB-isleofman.py
+|   |   MetopC-isleofman.py
+|   |   NOAA20-switzerland.py
+|   |   Sen3A-switzerland.py
+|   |   Sen3B-switzerland.py
+|   |   Sen3X-switzerland.py
+|   |   SNPP-switzerland.py
+|   |   Terra-eurol.py
+|   |   Terra-isleofman.py
+|   |   
+|   \---LEOarchive
+|           Aqua-area.py
+|           FY3D-area.py
+|           LEOstuff.py
+|           MetopB-area.py
+|           MetopB-NWCSAF-area.py
+|           MetopC-area.py
+|           MetopC-NWCSAF-area.py
+|           MetopX-area.py
+|           MetopX-NWCSAF-area.py
+|           NOAA20-area.py
+|           NOAAX-area.py
+|           Sen3A-area.py
+|           Sen3B-area.py
+|           Sen3X-area.py
+|           SNPP-area.py
+|           Terra-area.py
+|           
++---timeliness
+|   |   aquahist
+|   |   fy3dhist
+|   |   GEO-MSG2.plt
+|   |   GEO-MSG2.plt.bak
+|   |   GEO-TPGX.plt
+|   |   GEO-TPGX.plt.bak
+|   |   GNUplotColors.txt
+|   |   goes16hist
+|   |   goes17hist
+|   |   goes18hist
+|   |   himahist
+|   |   LEO-SATS.plt
+|   |   LEO-SATS.plt.bak
+|   |   metopbGDShist
+|   |   metopbNWCSAFhist
+|   |   metopcGDShist
+|   |   metopcNWCSAFhist
+|   |   msg2hist
+|   |   msg3hist
+|   |   msg4hist
+|   |   msg4NWCSAFhist
+|   |   noaa20hist
+|   |   s3aERRhist
+|   |   s3bERRhist
+|   |   snpphist
+|   |   terrahist
+|   |   timeliness.txt
+|   |   
+|   \---histograms
+|           EOS-Aqua-timeliness.png
+|           EOS-Terra-timeliness.png
+|           FengYun3D-timeliness.png
+|           GOES16-timeliness.png
+|           GOES17-timeliness.png
+|           GOES18-timeliness.png
+|           Himawari-8-timeliness.png
+|           MetopB-GDS-timeliness.png
+|           MetopB-NWCSAF-timeliness.png
+|           MetopC-GDS-timeliness.png
+|           MetopC-NWCSAF-timeliness.png
+|           MSG2-IODC-timeliness.png
+|           MSG4-FES-timeliness.png
+|           MSG4-NWCSAF-timeliness.png
+|           NOAA-20-timeliness.png
+|           S3A-ERR-timeliness.png
+|           S3B-ERR-timeliness.png
+|           Suomi-NPP-timeliness.png
+|           
+\---userconfig
+    |   areas.yaml
+    |   my_TLE_file.txt
+    |   platforms.txt
+    |   
+    +---backup
+    |       areas.yaml
+    |       olci.yaml
+    |       old_TLE_file.txt
+    |       platforms.txt
+    |       
+    +---composites
+    |       olci.yaml
+    |       
+    +---enhancements
+    \---readers
+            avhrr_l1b_eps.yaml.txt
+            README-Metop-Manager.txt
+            

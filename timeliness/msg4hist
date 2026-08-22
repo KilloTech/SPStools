@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# To cron Meteosat-11 (msg4) we look for the timeliness of EPI files first
+# Oase, 2022/12/06                                             E. Lobsiger
+
+# Example name : H-000-MSG4__-MSG4________-_________-EPI______-202109170940-__
+# Hugo's ruler : 0123456789012345678901234567890123456789012345678901234567890
+# copied EMCV  : 0         1         2         3         4         5         6
+
+mint=100000
+maxt=0
+minp=820
+maxp=920
+sat="MSG4-FES"
+chann="E1B-GEO-3"
+color="orange"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On BASIC Service channel E1B-GEO-3
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+    # This is for satellite MSG4 (EPIlogue files only)
+    for name in `ls -rt H-000-MSG4_*-EPI_*`
+    do
+        yea=${name:46:4}
+        mon=${name:50:2}
+        day=${name:52:2}
+        hou=${name:54:2}
+        min=${name:56:2}
+        start=`date -d "$yea-$mon-$day $hou:$min" "+%s" `
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$((trans - start))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt; \
+           minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" GEO-MSG2.plt

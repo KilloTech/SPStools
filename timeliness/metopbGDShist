@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# To cron Metop-B and Metop-C passes we have to know the maximum timeliness
+# Pytroll/Satpy cannot read Metop-X EARS level 00 files in "Data Channel 1"
+# We read Metop world wide coverage level 1b that has much higher timeliness
+# Oase, 2022/12/06                                               E. Lobsiger
+#
+
+# File Pattern : AVHR_xxx_1B_{platform_short_name}_{start_time:%Y%m%d%H%M%SZ}_{end_time:%Y%m%d%H%M%SZ}_{processing_mode}_{disposition_mode}_{creation_time:%Y%m%d%H%M%SZ}
+# Example name : AVHR_xxx_1B_M01_20190326085203Z_20190326085503Z_N_O_20190326103042Z
+# Hugo's ruler : 01234567890123456789012345678901234567890123456789012345678901234567890
+# copied EMCV  : 0         1         2         3         4         5         6         7
+# EUMETCast    : These files arrive as *.bz2 in channel E1B-EPS-10 (Basic Service)
+
+mint=100000
+maxt=0
+minp=0
+maxp=120
+sat="MetopB-GDS"
+chann="E1B-EPS-10"
+color="dark-khaki"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On BASIC Service Channel E1B-EPS-10
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+
+    # This is for satellite Metop-B (l1b)
+    for name in `ls -rt AVHR_xxx_1B_M01*.bz2`
+    do
+        yea=${name:16:4}
+        mon=${name:20:2}
+        day=${name:22:2}
+        hou=${name:24:2}
+        min=${name:26:2}
+        start=`date -d "$yea-$mon-$day $hou:$min" "+%s" `
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$(((trans - start)/60))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt;\
+            minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" LEO-SATS.plt

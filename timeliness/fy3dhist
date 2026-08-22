@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# To cron FengYun3D EARS files we can assume a maximum timeliness of 1800 seconds.
+# This is just to check whether EUMETSAT actually manages to do what they claim.
+# Oase, 2022/12/06                                                    E. Lobsiger
+
+# File Pattern : {platform_shortname}_{start_time:%Y%m%d_%H%M%S}_{end_time:%H%M%S}_{orbit_number:s}_MERSI_1000M_L1B.{ext}
+# File Pattern : {platform_shortname}_{start_time:%Y%m%d_%H%M%S}_{end_time:%H%M%S}_{orbit_number:s}_MERSI_GEO1K_L1B.{ext}
+# Example name : FY3D_20200429_011200_011300_12719_MERSI_1000M_L1B.HDF
+# Example name : FY3D_20200429_011200_011300_12719_MERSI_GEO1K_L1B.HDF
+# Hugo's ruler : 01234567890123456789012345678901234567890123456789012
+# copied EMCV  : 0         1         2         3         4         5
+
+maxt=0
+mint=100000
+maxp=50
+minp=0
+sat="FengYun3D"
+chann="E1H-RDS-2"
+color="cyan"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On HVS-1 Service Channel E1H-RDS-2
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+    # This is for satellite FY3D
+    for name in `ls -rt FY3D*.HDF`
+    do
+        yea=${name: 5:4}
+        mon=${name: 9:2}
+        day=${name:11:2}
+        hou=${name:14:2}
+        min=${name:16:2}
+        start=`date -d "$yea-$mon-$day $hou:$min" "+%s" `
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$(((trans - start)/60))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt;\
+            minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" LEO-SATS.plt

@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# To cron GOES16 and GOES18 slots we must test timeliness on EUMETCast
+# GOES16 and GOES18 have DOY in filename, I found jul() on stackabuse.com
+# Bash function jul() { date -d "$1-01-01 $2 days -1 day" "+%Y%m%d"; }
+# Oase, 2022/12/06                                         E. Lobsiger
+#
+
+jus() { date -d "$1-01-01 $2 days -1 day +$3 hours +$4 minutes " "+%s"; }
+
+# On HVS-1 service GOES16 E1H-TPG-1
+# On HVS-1 service GOES17 E1H-TPG-3 (will be replaced by GOES18 on January 2023)
+# On HVS-1 service GOES18 E1H-TPG-4
+
+# File names of GOES16:
+# "OR_ABI-L1b-RadF-M6C14_G16_s20212981350208_e20212981359516_c20212981359592.nc"
+# "0123456789012345678901234567890123456789012345678901234567890123456789012345"
+# "0         1         2         3         4         5         6         7     "
+
+# File names of GOES18:
+# "OR_ABI-L1b-RadF-M6C16_G18_s20212972330318_e20212972339396_c20212972339432.nc"
+# "0123456789012345678901234567890123456789012345678901234567890123456789012345"
+# "0         1         2         3         4         5         6         7     "
+
+
+mint=100000
+maxt=0
+maxp=30
+minp=0
+sat="GOES18"
+chann="E1H-TPG-4"
+color="royalblue"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On HVS-1 Service Channel E1H-TPG-4
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+    # This is for satellite GOES18
+    for name in `ls -rt OR_ABI*G18*.nc`
+    do
+        yea=${name:27:4}
+        doy=${name:31:3}
+        hou=${name:34:2}
+        min=${name:36:2}
+        start=` jus $yea $doy $hou $min`
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$(((trans - start)/60))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt;\
+            minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" GEO-TPGX.plt

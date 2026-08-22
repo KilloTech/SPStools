@@ -1,0 +1,391 @@
+======================================================================
+HOWTO install and use SatPy for EUMETCast under Debian GNU/Linux amd64
+HOWTO install and use SatPy for EUMETCast under Windows 10 (PRO) 64Bit
+======================================================================
+
+Previous GNU/Linux HOWTOs
+Version 1.0    2018/10/??                            by Ernst Lobsiger
+Version 2.0    2019/04/12                            by Ernst Lobsiger
+Version 3.0    2021/01/08                            by Ernst Lobsiger
+
+Previous Windows 10 HOWTOs
+Version 1.0    2020/05/05                            by Ernst Lobsiger
+Version 3.0    2021/01/08                            by Ernst Lobsiger
+
+A SatPy Processing System
+Version 4.0    2022/11/11                            by Ernst Lobsiger
+
+
+0) Preface to Version 4.0
+-------------------------
+
+To be honest I wanted to give up all my SatPy for Windows 10 stuff. Too
+few users seemed to be able to read text files and get used to scripts.
+I ended up trying to tell users what 'directory' means (as so far they only
+had folders) or that compressed files *.zip are really different from *.tgz.
+
+But noting on a sheet of paper all the names of Windows 10 EUMETCast users
+with SatPy success I heard of (close to 20 names) made me change my mind.
+There might be a similar number of GNU/Linux users that apply different
+variants of my scripts but these are mostly silent and do their own stuff.
+So I made common versions of my Python scripts that detect the OS in use.
+
+This started as a bugfix update of Version 3.0. It does improve issues
+that surfaced with more people using my scripts. I also found a couple
+of BUGs in PyTROLL/PyCoast and finally fixed and enhanced this package.
+This had the effect that we have now so much possibilities in PyCoast
+that it is not feasible to include and maybe even try to explain those
+in every script as I did in Version 3.0. This lead to a separation of
+common code in modules while the scripts were cut down to a minimum.
+It also means that if you want to try out Version 4.0 with an existing
+Miniconda3 install you *MUST* update PyCoast to at least version 1.6.1.
+Expect my Version 4.0 to be still relatively easy to use but radically
+different from what I published up to Version 3.0. You will have to use
+the things as provided in the scripts. If you want to try your own extra
+stuff (e.g. change the symbol and color of your station marker) you are
+forced to understand the python code in the modules and maybe even have
+to refer to the PyCoast documentation or code. Some LEO satellites have
+been decommissioned or GEO satellites moved. Version 4.0 only includes
+scripts of satellites that are alive and whose data is distributed via
+EUMETCast Europe at the date of publication. All scripts now accept the
+data either as disseminated by EUMETCast or decompression preprocessed
+if applicable. I use the new naming of EUMETCast Basic Service channels
+to make it easier for newcommers. All scripts still take only one easy to
+remember command line parameter indicating either time slot or pass date.
+
+There is a reduction of the number of scripts in that LEO scripts can
+now issue both DAY and NIG passes. All LEO scripts can be started for
+single pass or multipass. Possible date changes that can occur within
+one LEO image have been accounted for. All scripts now take a list of
+composites to be produced in one go. Scripts are centered around areas.
+Appart from all configuration parameters there remains very little code
+in a script. The heavy duty routines are now concentrated in two module
+files GEOstuff.py and LEOstuff.py. One copy of these files must reside
+in the same directory with the respective GEO and LEO satellite scripts.
+
+The whole code has been optimized for raw speed. This includes caching
+of decompressed files per time slot, GEOcache and OVRcache (which has
+been further optimized) as well as a delayed generation of composites.
+This way common datasets of various composites are only resampled once.
+That said the mentionned module files are now beyond new SatPy users.
+
+Various optimized MSLP overlays can be used with GEO satellite scripts.
+These have to be prepared in separate and OS specific processing chains.
+There is only one Python script to make UKMO(x) charts from E1B-DWDSAT.
+The rest of the MSLP overlay preparation scripts is either Bash or CMD.
+
+The main focus of version 4.0 is driven by my personal setup of EUMETCast
+Europe reception under GNU/Linux where raw data is stored compressed on
+the receiver PC itself and where image processing either takes place on
+the receiver PC too or on a separate PC that attaches over NFS read only
+(or in the case of Windows testing connects to a SAMBA server read only).
+Storage + processing on receivers is opposed to what EUMETSAT recommends
+and to what professional users of national meteorological offices setup.
+
+Under Windows the respective scheduler cannot be used to automate things
+the way cron works. You would have to setup one schedule for each simple
+line in a GNU/Linux crontab file. That's why I wrote three simple scripts
+cron.cmd, webm.cmd and tidy.cmd to easily get the needed functionality. It
+remains the fact that there is nothing like GNU/Linux flock()(1) and that
+the processing speed under Windows is half when using similar hardware.
+Naming the images in tmpdirs like sat-composite-area.png will minimize
+the problem of no flock() under Windows 10. Basically satellites that
+decompress their segments into a tmpdir are still possibly interfering.
+That said I tried hard to distribute a cron.cmd that should work under
+Windows 10. It has worked during my tests on a Windows PC, I7, 16GB RAM.
+
+While up to Version 3.0 my scripts have been a Starter Kit, Version 4.0 is
+now rather a SatPy Processing System (SPS). I still use two top directories
+that I now named "SPStools" and "SPSdata". The idea is that the system can
+easily be installed and tried out at the side of a preexisting Version 3.0.
+I admit that I had problems to get used to the new naming that's why it is
+now easy to rename the ???tools and ???data directories. This has only to
+be done in GEOstuff.py, LEOstuff.py and all helper scripts in subdirectory
+cmdfiles. With schedulers  you also have to adapt the path in the command
+line. The satellite Python scripts themselves don't have to be changed.
+
+It must be noted that I never ran this system on a Windows 10 EUMETCast
+receiver. If you try to do this then neither the SPStools nor the SPSdata
+directory should be on the same harddisk as the TelliCast filesystem (where
+the raw segments come in and where you have the channels tmp directories).
+
+
+1) Installation of the basic PyTROLL/Satpy environment
+------------------------------------------------------
+
+It is assumed that you have a working Python (pytroll) environment already. If
+you don't then refer to HOWTO 3.0 to get the system ready. This is different:
+
+a) You don't have to set environment variables anymore. If PPP_CONFIG_DIR or
+   SATPY_CONFIG_PATH has been defined for a preexisting Version 3.0 install
+   just leave it as is. This will not interfere in any way with Version 4.0.
+
+b) You must have installed with conda: satpy, pycoast, pyhdf and hdf5plugin.
+   The latter decompression plugin is used for comming MTG satellites. If you
+   want to play with the 'gradient_search' resampler you also need shapely.
+
+It's strongly recommended that you conda update an existing (pytroll) environment
+to the latest packages. As mentioned already, PyCoast *MUST* be Version >= 1.6.1.
+
+
+2) Shorelines, rivers and borders
+---------------------------------
+
+There are detailed instructions in Starter Kit HOWTO 3.0. This processing Version 4.0
+comes as a full featured system that includes the necessary GSHHG shape files already.
+
+It's still highly recommended to go once to http://www.soest.hawaii.edu/wessel/gshhg/
+to find out what GSHHG is all about and especially what 'resolution' and 'level' means.
+
+
+3) The new CITIES subdirectory
+------------------------------
+
+Starting with PyCoast 1.6.0 an old experimental feature of automatically displaying cities
+in overlays has been reactivated in the code. This possibility is based on a tab delimited
+(utf8) text file cities.txt that has to be placed into the ../geodata/CITIES subdirectory.
+
+The cities database file can be downloaded from http://download.geonames.org/export/dump
+as cities500.zip, cities1000.zip, cities5000.zip and cities15000.zip. The decompressed files
+can heavily be reduced in size by a Python script reduce_cityfiles.py. See the information
+in cities2022.zip distributed with V 4.0. While cities5000.zip has much more entries than
+cities15000.zip it will also display a lot of unexpected places. The United States have
+e.g. a bunch of smaller cities called 'London' or 'Paris'. To make things easy this V 4.0
+distributes a reduced cities.txt (1182780 Bytes) based on a version of cities15000.zip.
+
+
+4) Working with EUMETCast PyTROLL/SatPy scripts in Version 4.0
+--------------------------------------------------------------
+
+There are three scripts directories. GEOscripts contains all scripts for geostationary
+satellites. LEOscripts contains all scripts for polar orbiting satellites. Both of these
+directories also have archive subdirectories where the original scripts are distributed.
+There is a third directory DEVscripts where all new testing of additional satellites, areas
+and composites as well as further code development for the two modules should take take place.
+
+In Version 4.0 scripts are named after satellite and choosen area. The idea is that appart
+from a time slot or given pass date all possible configuration is still set and maybe
+commented in the script code. This is especially useful for area specific cities lists.
+Every script has important information about the satellite at hand and allowed composites.
+
+These are the few things you must check/adapt in your modules GEOstuff.py and LEOstuff.py:
+
+a) Make sure that toodir and datdir reflect the file layout of your system. Set your
+   station location. These simple changes in the two modules have to be done only once.
+
+These are the few things you have to check in a GEOscript or LEOscript to get it working:
+
+a) Make sure the latest accepted version of GEOstuff.py is side by side of your GEOscript.
+b) Make sure the latest accepted version of LEOstuff.py is side by side of your LEOscript.
+c) While segdir is the base directory for your raw satellite segments isbulk=False means
+   that this is not a bulk directory but has further subdirectories of the form YYYY/mm/dd.
+   For certain file types the variable decomp=True can flag that the segment files have been
+   decompressed beforehand. The defaults for my TC systems are isbulk=False as I have my own
+   solution moving segment files from a RAM disk into YYYY/mm/dd directories and decomp=False
+   as I leave all raw segment files as distributed (compressed if applicable) by EUMETCast.
+
+As long as you are testing different areas, composites and other available parameters you
+should do that in DEVscripts with testrun=True. This way you use tmp directory tmpdirs/xtest
+and output to products/TEST. If you have already sheduled other sat-area.py scripts of the
+same satellite there is no possibility of interference with your interactive testing. It's
+also recommended to do testing without GEOcache or OVRcache as this can produce numerous
+additional files not used later (you may have to empty directory ../cache/xtest manually).
+
+All GEO scripts are started interactively with "(pytroll) python sat-area.py YYYYmmddHHMM"
+All LEO scripts are started interactively with "(pytroll) python sat-area.py YYYYmmddNoD"
+where NoD is either 'NIG' (sat pass on the dark side) or 'DAY' (sat pass on the lit side).
+
+For picking the right segments LEO scripts rely on a fairly recent (not older than 1 months)
+TLE file. There is a helper bash script at ../cmdfiles/Update_TLE_file.sh to do the update
+with a crontab entry. For Windows users the TLE update can be scheduled directly in cron.cmd.
+To shedule GEO and LEO scripts with cron you have to rely on (worst case) service timeliness.
+Study GEO-pic.sh, LEO-pic.sh and GEO-mov.sh plus my example crontab how this can be done.
+
+Version 4.0 is distributed as *.zip or *.tgz of a working system including some images.
+There is at least one GEOscript and one LEOscript in DEVscripts phase. It is recommended
+that you start with the scripts in DEVscripts to get first results in TEST. Then have a
+look at the MSLP overlay generation scripts and start those in a terminal. If you don't
+receive channel 'E1B-DWDSAT' already this cannot (could not?) simply be asked for in EOP.
+2021 Deutscher Wetterdienst (DWD) still insisted on its own registation procedure and form.
+
+Later go to GEOscripts and LEOscripts and try to reproduce interactively the image types
+preconfigured by just making the scripts find the data segments (you may not have all data).
+Finally schedule LEOscripts and GEOscripts that you have managed to get working manually.
+GNU/Linux users find my crontab as a template. For Windows users there are *.xml files
+that I exported from a working system: Try to import those directly into your scheduler.
+
+
+
+5) Debugging when things go wrong
+---------------------------------
+
+If things go wrong read the debugging chapter of my OS specific Version 3.0 HOWTOs:
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ There is one point I forgot to mention in my HOWTO V 3.0. I put it here below: +
++ If you experience an all black legend at left then this is a problem of limited +
++ resources for IM (precaution in server environments). This is likely to happen  +
++ with BIG pictures like the full disk images of GOES16/18 and Himawari-8. Go to  +
++ /etc/ImageMagick-6/ and make a backup copy of policy.xml. Then edit policy.xml  +
++ and double/triple the values of the entries "memory", "map", "area" and "disk". +
++ Though there is a policy.xml for Windows too, I have not seen similar problems. +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+9) Sheduled batch processing
+-----------------------------
+
+If you work under GNU/Linux you should certainly know a minimum of shell programming.
+As you also should know there are a bunch of different shells. I mostly use bash.
+Oftem there is a link "sh" that points to a shell. Under Debian 10 you can make a
+
+user@host:~$ which sh
+
+and the system will tel you where "sh" is. The answer is "/usr/bin/sh" and if you go
+there you see that "sh" is a link that actually points to dash (a slimed down bash).
+
+Shell scripts are mainly used with a scheduler. You want the system to automatically
+produce certain images every day unattended. One problem you have with Miniconda3 is
+that a shell file should activate your (pytroll) environment before calling the python
+script. Fortunately Miniconda3/bin provides conda that can be used for activation.
+
+As there is only one tmp directory per satellite, you should never run two scripts
+of the same satellite at the same time to prevent one process from deleting or
+overwriting files of the other process. That's where bash script GEO-pic.sh and
+LEO-pic.sh come in. These scripts use file locking with flock() (1) per satellite.
+Check these bash scripts and also my example crontab to see how these are called.
+If you are new to cron then "man 8 cron" and "man 5 crontab" is where you start.
+
+Another issue is that you must be pretty sure that the files you are asking for
+have actually been received. Professional systems use inotify() (7) to wait for
+known files. If such a system detects e.g. that the EPIlogue file of some seviri
+time slot comes in it knows that this is the earliest possible time to start
+processing of this slot. My system completely relies on timeliness. This is the
+time delay from taking the data by the satellite sensor (start and stop times
+in the file names) until it is disseminated via EUMETCast and received by your
+system. Timeliness is either known for certain EUMETSAT services like EARS or
+GDS or can be measured with some homebrew scripts that simply compare start/stop
+times given in filenames with file system modyfy times found with stat() (1).
+
+EUMETSAT Advanced Retransmission Service (EARS)
+https://www.eumetsat.int/EARS-regional-data-service
+Timeliness EARS-HVHRR  = 30mins
+Timeliness EARS-VIIRS  = 30mins
+Timeliness EARS-MERSI  = 30mins
+
+Metop Global Data Service (GDS)
+https://www.eumetsat.int/metop-gds
+Timeliness AVHRR Level 1 =  2hrs 15mins
+
+For LEO satellites appart from timeliness you must know at what time the sat is
+passing near the center of your area. This can either be done by tracking the sat
+(necessary for direct readout) or with a much more simple approach based on LTAN.
+Version 4.0 uses the simple approach: For any POI you can calculate the UTC time
+of a theoretical ideal pass (exactly overhead) for DAY and NIG. During a repeat
+cicle a satellite will never exactly pass at that time but will be sometimes a
+bit earlier (pass east of the POI) or a bit later (pass west of the POI). As the
+module LEOstuff.py takes the best (closest) observed pass near the POI this can
+be up to half an orbit period (which is typically 101 minutes) offset in time from
+the ideal pass. Alowing for some slack we take (101 minutes)/2 = 1 hour. This way
+you can schedule image generation at 'ideal pass + 1 hour + worst case timeliness'.
+
+For GEO images with MSLP overlays you have to generate the respective charts first.
+Again a question of timeliness: When will an MSLP chart valid 12:000 be available?
+For DWD MSLP charts dwdx that are downloaded from https://opendata.dwd.de I found:
+
+'dwdc'  -->    DWD Polar Stereographic (Ground Pressure Overlay, stere, 12 hourly)
+2  46   -->    2 hours after valid time 46 dwdc charts have been available
+3  16   -->    3 hours after valid time 16 other dwdc charts got available
+4   6   -->    4 hours after valid time  6 other dwdc charts got available
+8   1   -->    8 hours after valid time  1 other dwdc chart  got available
+9   2   -->    9 hours after valid time  2 other dwdc charts got available
+
+'dwdn'  -->    DWD Northern Atlantic (Ground Pressure Overlay, lcc, 6 hourly)
+2  90   -->    2 hours after valid time 90 dwdn charts have been available
+3  44   -->    3 hours after valid time 44 other dwdn charts got available
+4   8   -->    4 hours etc. etc.
+8   1
+9   2
+
+'dwda'  -->    DWD Western Europe (Ground Pressure Overlay, lcc, 3 hourly)
+1 190   -->    1 hour etc. etc.
+2  67
+3   2
+4   4
+5   1
+
+'dwdi'  -->    DWD Central Europe (ICON13 Ground Pressure Overlay, lcc, 12 hourly)
+4  32   -->    4 hours etc. etc.
+8   2
+20  2
+
+From the above statistics it seems fairly save to schedule 'dwdx' chart processing
+every hour and to schedule respective Meteosat-11 images with MSLP overlays 4 hours
+after the respective time slot. UKMOx MSLP overlays are ready 2 hours after valid time.
+NOAA Ocean Prediction Center (OPC) MSLP overlays are ready 4 hours after valid time.
+
+When it comes to webm movies using ffmpeg there is a bash script GEO-mov.sh.
+This assembles specially sized frames or full images of a choosable time period.
+If you prepare rss frames from Meteosat-10 make sure your processing system can
+handle all frames or images within the 5 minutes of an rss time slot. Otherwise
+unprocessed frames will heap up and will finally be skipped by script GEO-pic.sh.
+
+Under Windows 10 there is the 'task scheduler' that has different names depending
+on your Windows language settings. In a black window taskshd.msc most likely will
+open this graphic application. On the other hand schtasks.exe /? is a CLI only
+version mostly used by professionals. Both versions cannot be used to automate
+things the easy way this can be done with cron under GNU/Linux. A task schedule
+in taskshd can be exported as a *.xml file. You find three cmd scripts cron.cmd,
+webm.cmd and tidy.cmd that can be scheduled with taskshd.msc by importing CRON.xml
+(once/minute), WEBM.xml (once/hour) and TIDY.xml (once/day). These *.xml have been
+produced as unprivileged user 'eumetcast'. They can be renamed *.txt and edited.
+Your Windows 10 PC may go to sleep and stop scheduled processing it you have not
+touched the mouse or keyboard for a while. In this case deactivate energy saving.
+
+
+10) Where do we go from here
+----------------------------
+
+If you are new to Python: learn more Python! You will find every possible help
+on the internet. But like in any other computer programming language you will
+profit most from reading/testing and trying to understand other peoples code.
+
+If you have not already RTFM go to this link and do it:
+https://satpy.readthedocs.io/en/latest/
+
+Read and maybe join, ask and contribute here:
+https://groups.google.com/forum/#!forum/pytroll
+
+Learn more about conda. There is no automatic update of your PyTROLL/SatPy packages.
+
+Learn more about map projections and create your own areas. Create your own composites.
+
+If you begin to work with the code you should use an editor with syntax highlighting
+for Python. If you do not already use it have a look at GNU Midnight Commander (mc).
+For an easy to use but powerful editor under Windows please have a look at NOTEPAD++.
+
+If you finally want to contribute code to PyTROLL/SatPy you must be quite fluent in Python,
+you must open a free account on github.com, you must learn and use git to make a Pull Request
+(PR). This sounds complicated but -- with a little help from the net -- it can be done at 70+.
+
+
+11) Uninstallation of the whole stuff
+-------------------------------------
+
+Uninstallation of Miniconda3 under GNU/Linux is easily done with mc. You just delete the
+directory /home/user/miniconda3 and /home/username/.conda and also the files .condarc
+and python_history. Then you tidy up your .bashrc to what it was before and you are done.
+The two directories named with variables 'toodir' and 'datdir' can be deleted as a whole.
+
+Under Windows uninstallation of Miniconda3 is accomplished via the control panel. You
+may have to clean out by hand Anaconda Menu entries and in your Windows home directory
+C:\Users\username the small file .condarc and the two directories .conda and .config.
+Then with the Explorer you just delete the directories denoted by 'toodir' and 'datdir'.
+
+
+***************************************************************************************
+SatPy Processing System, HOWTO V 4.0. This is a major update of V 3.0 that is meant for
+rather advanced SatPy users. No further updates are planned at the moment so don't ask.
+
+Belp, Oase 2022/11/11                                                    Ernst Lobsiger
+***************************************************************************************

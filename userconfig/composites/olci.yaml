@@ -1,0 +1,327 @@
+# 'Satpy Processing System for EUMETCast' (SPS), V 4.1
+# Put this into your user configuration composites dir
+
+sensor_name: visir/olci
+
+modifiers:
+
+  rayleigh_corrected:
+    modifier: !!python/name:satpy.modifiers.PSPRayleighReflectance
+    atmosphere: us-standard
+    aerosol_type: rayleigh_only
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [sunz_corrected]
+    optional_prerequisites:
+    - satellite_azimuth_angle
+    - satellite_zenith_angle
+    - solar_azimuth_angle
+    - solar_zenith_angle
+
+  rayleigh_corrected_marine_clean:
+    modifier: !!python/name:satpy.modifiers.PSPRayleighReflectance
+    atmosphere: us-standard
+    aerosol_type: marine_clean_aerosol
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [sunz_corrected]
+    optional_prerequisites:
+    - satellite_azimuth_angle
+    - satellite_zenith_angle
+    - solar_azimuth_angle
+    - solar_zenith_angle
+
+  rayleigh_corrected_marine_tropical:
+    modifier: !!python/name:satpy.modifiers.PSPRayleighReflectance
+    atmosphere: tropical
+    aerosol_type: marine_tropical_aerosol
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [sunz_corrected]
+    optional_prerequisites:
+    - satellite_azimuth_angle
+    - satellite_zenith_angle
+    - solar_azimuth_angle
+    - solar_zenith_angle
+
+  rayleigh_corrected_desert:
+    modifier: !!python/name:satpy.modifiers.PSPRayleighReflectance
+    atmosphere: tropical
+    aerosol_type: desert_aerosol
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [sunz_corrected]
+    optional_prerequisites:
+    - satellite_azimuth_angle
+    - satellite_zenith_angle
+    - solar_azimuth_angle
+    - solar_zenith_angle
+
+  rayleigh_corrected_land:
+    modifier: !!python/name:satpy.modifiers.PSPRayleighReflectance
+    atmosphere: us-standard
+    aerosol_type: continental_average_aerosol
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [sunz_corrected]
+    optional_prerequisites:
+    - satellite_azimuth_angle
+    - satellite_zenith_angle
+    - solar_azimuth_angle
+    - solar_zenith_angle
+
+
+composites:
+  true_color:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: true_color
+
+  true_color_land:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_land]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_land]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_land]
+    standard_name: true_color
+
+  true_color_desert:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_desert]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_desert]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_desert]
+    standard_name: true_color
+
+  true_color_marine_clean:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_marine_clean]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_marine_clean]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_marine_clean]
+    standard_name: true_color
+
+  true_color_marine_tropical:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_marine_tropical]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_marine_tropical]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected_marine_tropical]
+    standard_name: true_color
+
+  true_color_raw:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected]
+    standard_name: true_color
+
+  ocean_color:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: ocean_color
+
+# All composites below are enhancements of RGB combinations used by certain
+# power users up to now (*'satpy080603t' is the same as 'true_color_raw'*).
+# More background information at    https://groups.io/g/MSG-1/message/30626
+# These do use the PyTROLL/satpy defined modifiers above (Oa08 always used)
+# For (N/T/C) enhancements check    .../satpy/etc/enhancements/generic.yaml
+
+# NATURAL COLOR ***********************************************************
+
+  hugo211709n:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa21'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa17'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa09'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: natural_color
+
+  ernst100603n:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa10'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: natural_color
+
+  david090604n:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa09'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa04'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: natural_color
+
+  simon080503n:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa05'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: natural_color
+
+  satpy080603n:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: natural_color
+
+# TRUE-COLOR **************************************************************
+
+  hugo211709t:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa21'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa17'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa09'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: true_color
+
+  ernst100603t:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa10'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: true_color
+
+  david090604t:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa09'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa04'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: true_color
+
+  simon080503t:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa05'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: true_color
+
+  satpy080603t:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: true_color
+
+# OCEAN-COLOR *************************************************************
+
+  hugo211709o:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa21'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa17'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa09'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: ocean_color
+
+  ernst100603o:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa10'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: ocean_color
+
+  david090604o:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa09'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa04'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: ocean_color
+
+  simon080503o:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa05'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: ocean_color
+
+  satpy080603o:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - name: 'Oa08'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa06'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    - name: 'Oa03'
+      modifiers: [effective_solar_pathlength_corrected, rayleigh_corrected]
+    standard_name: ocean_color

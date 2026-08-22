@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# To cron Metop-B and Metop-C passes we have to know the maximum timeliness
+# Pytroll/Satpy cannot read Metop-X EARS level 00 files in "Data Channel 1"
+# We read Metop world wide coverage level 1b that has much higher timeliness
+# Oase, 2022/12/06                                               E. Lobsiger
+#
+
+# Typical naming of NWC SAF PPS files (CT, CMA, CTTH, see ../etc/nwcsaf-pps_nc.yaml)
+# File Pattern : W_XX-EUMETSAT-Darmstadt,SING+LEV+SAT,{platform_id}+CT_C_EUMS_{start_time:%Y%m%d%H%M%S}_{orbit_number}.nc.bz2
+# Example name : W_XX-EUMETSAT-Darmstadt,SING+LEV+SAT,METOPB+CT_C_EUMS_20220513123000_50077.nc.bz2
+# Hugo's ruler : 012345678901234567890123456789012345678901234567890123456789012345678901234567890
+# copied EMCV  : 0         1         2         3         4         5         6         7         8
+# EUMETCast    : These files arrive as above in channel E1B-RDS-1 (Basic Service)
+
+maxt=0
+mint=100000
+maxp=50
+minp=0
+sat="MetopB-NWCSAF"
+chann="E1B-RDS-1"
+color="dark-khaki"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On BASIC Service Channel E1B-RDS-1
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+
+    # This is for satellite Metop-B (NWCSAF)
+    for name in `ls -rt W_XX-EUMETSAT-Darmstadt,SING+LEV+SAT,METOPB+CT_*.bz2`
+    do
+        yea=${name:54:4}
+        mon=${name:58:2}
+        day=${name:60:2}
+        hou=${name:62:2}
+        min=${name:64:2}
+        start=`date -d "$yea-$mon-$day $hou:$min" "+%s" `
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$(((trans - start)/60))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt;\
+            minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" LEO-SATS.plt

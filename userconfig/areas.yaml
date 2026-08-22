@@ -1,0 +1,1001 @@
+
+# On top you have a couple of 'areas' I added for the "Satpy Processing System" (SPS) V 4.1
+# Many of these are made with stere, WGS84, as simple as possible. Add your own stuff here.
+
+# ------------------------------------------------------------------------------------------------
+# EPS_4326 can be used if you experiment  with resampling background images (21600 x 10800 pixels)
+# found on the Internet that have no geo location info like *.png and *.tiff (except for GEO-tiff).
+
+EPSG_4326:
+   description: Global equal latitude/longitude grid (in Degrees)
+   projection:
+     init: EPSG:4326
+   shape:
+     width: 21600
+     height: 10800
+   area_extent:
+     lower_left_xy: [-180.0, -90.0]
+     upper_right_xy: [180.0, 90.0]
+
+# ------------------------------------------------------------------------------------------------
+# Full disc areas (normally) used with GEO satellites only. Reduced resolutions for *.webm movies.
+# Similar areas with longer names might be found in SatPy distributed file  ../satpy/etc/areas.yaml
+
+
+fci_0deg_1km:
+  description: Full disk FCI view, 1 km (based on pre-launch test data)
+  projection:
+    proj: geos
+    lon_0: 0
+    h: 35786400
+    x_0: 0
+    y_0: 0
+    ellps: WGS84
+    no_defs: null
+  shape:
+    height: 11136
+    width: 11136
+  area_extent:
+    lower_left_xy: [-5567999.998527619, -5567999.998577303]
+    upper_right_xy: [5567999.998577303,  5567999.998527619]
+    units: m
+
+fci_0deg_2km:
+  description: Full disk FCI view, 2 km (based on pre-launch test data)
+  projection:
+    proj: geos
+    lon_0: 0
+    h: 35786400
+    x_0: 0
+    y_0: 0
+    ellps: WGS84
+    no_defs: null
+  shape:
+    height: 5568
+    width: 5568
+  area_extent:
+    lower_left_xy: [-5567999.994206558, -5567999.994200589]
+    upper_right_xy: [5567999.994200589,  5567999.994206558]
+    units: m
+
+fci_0deg_4km:
+  description: Full disk FCI view, 4 km (based on pre-launch test data)
+  projection:
+    proj: geos
+    lon_0: 0
+    h: 35786400
+    x_0: 0
+    y_0: 0
+    ellps: WGS84
+    no_defs: null
+  shape:
+    height: 2784
+    width: 2784
+  area_extent:
+    lower_left_xy: [-5567999.994206558, -5567999.994200589]
+    upper_right_xy: [5567999.994200589,  5567999.994206558]
+    units: m
+
+
+# EUMETSAT names  "Full Earth Scan" (FES) or  "0 Degree Service"
+msg_fes_3km:
+  description: Full globe MSG image 0 degrees
+  projection:
+    proj: geos
+    lon_0: 0.0
+    a: 6378169.0
+    b: 6356583.8
+    h: 35785831.0
+  shape:
+    height: 3712
+    width:  3712
+  area_extent:
+    lower_left_xy: [-5570248.686685662, -5567248.28340708]
+    upper_right_xy: [5567248.28340708, 5570248.686685662]
+
+# This has been scaled to 1080 pixels for full disk webm movies
+msg_fes_rss:
+  description: Full globe MSG image 0 degrees (resolution FULL HD)
+  projection:
+    proj: geos
+    lon_0: 0.0
+    a: 6378169.0
+    b: 6356583.8
+    h: 35785831.0
+  shape:
+    height: 1080
+    width:  1080
+  area_extent:
+    lower_left_xy: [-5570248.686685662, -5567248.28340708]
+    upper_right_xy: [5567248.28340708, 5570248.686685662]
+
+# Common EUMETSAT name is "Rapid Scanning Service" (RSS)
+msg_rss_3km:
+  description: Full globe MSG image 9.5 degrees east (rss covers upper part only)
+  projection:
+    proj: geos
+    lon_0: 9.5
+    a: 6378140.0
+    b: 6356755.0
+    h: 35785831.0
+  shape:
+    height: 3712
+    width: 3712
+  area_extent:
+    lower_left_xy: [-5570248.477339261, -5567248.074173444]
+    upper_right_xy: [5567248.074173444, 5570248.477339261]
+
+# Common EUMETSAT name is "Indian Ocean Data Coverage" (IODC)
+msg_ioc_3km:
+  description: Full globe MSG image 45.5 degrees (Indian Ocean Coverage)
+  projection:
+    proj: geos
+    lon_0: 45.5
+    a: 6378169.0
+    b: 6356583.8
+    h: 35785831.0
+  shape:
+    height: 3712
+    width: 3712
+  area_extent:
+    lower_left_xy: [-5570248.686685662, -5567248.28340708]
+    upper_right_xy: [5567248.28340708, 5570248.686685662]
+
+# This has been scaled to 1080 pixels for full disk webm movies
+msg_ioc_rss:
+  description: Full globe MSG image 45.5 degrees (resolution FULL HD)
+  projection:
+    proj: geos
+    lon_0: 45.5
+    a: 6378169.0
+    b: 6356583.8
+    h: 35785831.0
+  shape:
+    height: 1080
+    width: 1080
+  area_extent:
+    lower_left_xy: [-5570248.686685662, -5567248.28340708]
+    upper_right_xy: [5567248.28340708, 5570248.686685662]
+
+
+hima_f_2km:
+  description: Full globe Himawari-8 at 144.7 degrees east
+  projection:
+    proj: geos
+    lon_0: 144.7
+    a: 6378140.0
+    b: 6356755.0
+    h: 35785831.0
+  shape:
+    height: 5500
+    width: 5500
+  area_extent:
+    lower_left_xy: [-5570248.477339261, -5567248.074173444]
+    upper_right_xy: [5567248.074173444, 5570248.477339261]
+
+
+# This has been scaled to 1080 pixels for full disk webm movies
+hima_f_rss:
+  description: Full globe Himawari-8 at 144.7 degrees east
+  projection:
+    proj: geos
+    lon_0: 144.7
+    a: 6378140.0
+    b: 6356755.0
+    h: 35785831.0
+  shape:
+    height: 1080
+    width: 1080
+  area_extent:
+    lower_left_xy: [-5570248.477339261, -5567248.074173444]
+    upper_right_xy: [5567248.074173444, 5570248.477339261]
+
+
+# This has been scaled to 5500 pixels like AHI, which adds some
+# black margin t/b/l/r. It makes mother EARTH look much lighter.
+goes_ef_2km:
+  description: GOES East ABI Full Disk at 2 km SSP resolution
+  projection:
+    proj: geos
+    sweep: x
+    lon_0: -75.2
+    h: 35786023
+    x_0: 0
+    y_0: 0
+    ellps: GRS80
+    no_defs: null
+    type: crs
+  shape:
+    height: 5500 # 5424 native
+    width: 5500 # 5424 native
+  area_extent:
+    lower_left_xy: [-5511047.54199, -5511047.54199]
+    upper_right_xy: [5511047.54199, 5511047.54199]
+    units: m
+
+# This has been scaled to 1080 pixels for full disk webm movies
+goes_ef_rss:
+  description: GOES East ABI Full Disk to be used with ffmpeg
+  projection:
+    proj: geos
+    sweep: x
+    lon_0: -75.2
+    h: 35786023
+    x_0: 0
+    y_0: 0
+    ellps: GRS80
+    no_defs: null
+    type: crs
+  shape:
+    height: 1080
+    width: 1080
+  area_extent:
+    lower_left_xy: [-5511047.54199, -5511047.54199]
+    upper_right_xy: [5511047.54199, 5511047.54199]
+    units: m
+
+# This has been scaled to 5500 pixels like AHI, which adds some
+# black margin t/b/l/r. It makes mother EARTH look much lighter.
+# Use lon_0 -137.2 for GOES17 and lon_0 -137.0 for newer GOES18
+goes_wf_2km:
+  description: GOES West ABI Full Disk at 2 km SSP resolution
+  projection:
+    proj: geos
+    sweep: x
+    lon_0: -137.2
+    h: 35786023
+    x_0: 0
+    y_0: 0
+    ellps: GRS80
+    no_defs: null
+    type: crs
+  shape:
+    height: 5500 # 5424 native
+    width: 5500 # 5424 native
+  area_extent:
+    lower_left_xy: [-5511047.54199, -5511047.54199]
+    upper_right_xy: [5511047.54199, 5511047.54199]
+    units: m
+
+# This has been scaled to 1080 pixels for full disk webm movies
+goes_wf_rss:
+  description: GOES West ABI Full Disk to be used with ffmpeg
+  projection:
+    proj: geos
+    sweep: x
+    lon_0: -137.2
+    h: 35786023
+    x_0: 0
+    y_0: 0
+    ellps: GRS80
+    no_defs: null
+    type: crs
+  shape:
+    height: 1080 # 5424
+    width: 1080 # 5424
+  area_extent:
+    lower_left_xy: [-5511047.54199, -5511047.54199]
+    upper_right_xy: [5511047.54199, 5511047.54199]
+    units: m
+
+
+# ------------------------------------------------------------------------------------------------
+# Continents that can be covered down to full resolution with MetopX (GDS) if enough RAM provided!
+
+africa1km:
+  description: Africa - Global 1km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: 5.0
+    lon_0: 20.0
+  shape:
+    height: 9276
+    width: 8350
+  area_extent:
+    lower_left_xy: [-4458000.0, -4795000.0]
+    upper_right_xy: [3891000.0, 4480000.0]
+
+africa2km:
+  description: Africa - Global 2km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: 5.0
+    lon_0: 20.0
+  shape:
+    height: 4638
+    width: 4175
+  area_extent:
+    lower_left_xy: [-4458000.0, -4795000.0]
+    upper_right_xy: [3891000.0, 4480000.0]
+
+africa5km:
+  description: Africa - Global 5km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: 5.0
+    lon_0: 20.0
+  shape:
+    height: 1855
+    width: 1670
+  area_extent:
+    lower_left_xy: [-4458000.0, -4795000.0]
+    upper_right_xy: [3891000.0, 4480000.0]
+
+samerica1km:
+  description: South America - Global 1km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: -15.0
+    lon_0: -60.0
+  shape:
+    height: 8000
+    width: 6000
+  area_extent:
+    lower_left_xy: [-3000000.0, -4899000.0]
+    upper_right_xy: [2999000.0, 3100000.0]
+
+samerica2km:
+  description: South America - Global 2km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: -15.0
+    lon_0: -60.0
+  shape:
+    height: 4000
+    width: 3000
+  area_extent:
+    lower_left_xy: [-3000000.0, -4899000.0]
+    upper_right_xy: [2999000.0, 3100000.0]
+
+samerica5km:
+  description: South America - Global 5km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: -15.0
+    lon_0: -60.0
+  shape:
+    height: 1600
+    width: 1200
+  area_extent:
+    lower_left_xy: [-3000000.0, -4899000.0]
+    upper_right_xy: [2999000.0, 3100000.0]
+
+namerica1km:
+  description: North America - Global 1km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: 50.0
+    lon_0: -100.0
+  shape:
+    height: 8996
+    width: 9223
+  area_extent:
+    lower_left_xy: [-4487000.0, -4515000.0]
+    upper_right_xy: [4735000.0, 4480000.0]
+
+namerica2km:
+  description: North America - Global 2km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: 50.0
+    lon_0: -100.0
+  shape:
+    height: 4498
+    width: 4612
+  area_extent:
+    lower_left_xy: [-4487000.0, -4515000.0]
+    upper_right_xy: [4735000.0, 4480000.0]
+
+namerica5km:
+  description: North America - Global 5km USGS Landuse database
+  projection:
+    proj: laea
+    a: 6370997.0
+    b: 6370997.0
+    lat_0: 50.0
+    lon_0: -100.0
+  shape:
+    height: 1800
+    width: 1844
+  area_extent:
+    lower_left_xy: [-4487000.0, -4515000.0]
+    upper_right_xy: [4735000.0, 4480000.0]
+
+
+# ****************************************************************************************************
+# Special areas for MSLP overlays. Projections/resolutions must conform with the original MSLP charts.
+# ****************************************************************************************************
+
+#
+# These overlays are heavily reworked and cropped versions of the Ocean Prediction Center (OPC) files
+# A_sfc_full_ocean_color.png and P_sfc_full_ocean_color.png. Do not take them for OPC available charts
+# A_e_sfc_ocean_color.png, A_w_sfc_ocean_color.png, P_e_sfc_ocean_color.png, P_w_sfc_ocean_color.png.
+# Pycoast problem: See my analysis at https://groups.google.com/g/pytroll/c/Uz1zE6TpFzE/m/X9Frb4pECQAJ
+#
+
+opcae:
+  description: NOAA/OPC Atlantic East Mercator (Surface Pressure Overlay, lat_ts=0.0, -30.0 +/- 40.0)
+  projection:
+    proj: merc
+    ellps: WGS84
+    lon_0: 10.0
+  shape:
+    height: 1562
+    width:  1776
+  area_extent:
+    lower_left_xy: [-8914000.0,  1795000.0]
+    upper_right_xy: [      0.0,  9600000.0]
+
+opcaw:
+  description: NOAA/OPC Atlantic West Mercator (Surface Pressure Overlay, lat_ts=0.0, -60.0 +/-40)
+  projection:
+    proj: merc
+    ellps: WGS84
+    lon_0: -60.0
+  shape:
+    height: 1562
+    width:  1776
+  area_extent:
+    lower_left_xy: [-4457000.0,  1795000.0]
+    upper_right_xy: [4457000.0,  9600000.0]
+
+opcpe:
+  description: NOAA/OPC Pacific East Mercator (Surface Pressure Overlay, lat_ts=0.0, -155 +/-40)
+  projection:
+    proj: merc
+    ellps: WGS84
+    lon_0: 170.0
+  shape:
+    height: 1562
+    width:  1776
+  area_extent:
+    lower_left_xy: [ -557125.0,  1795000.0]
+    upper_right_xy: [8356875.0,  9600000.0]
+
+opcpw:
+  description: NOAA/OPC Pacific West Mercator (Surface Pressure Overlay, lat_ts=0.0, 175 +/-40)
+  projection:
+    proj: merc
+    ellps: WGS84
+    lon_0: 170.0
+  shape:
+    height: 1562
+    width:  1776
+  area_extent:
+    lower_left_xy: [-3899875.0,  1795000.0]
+    upper_right_xy: [5014125.0,  9600000.0]
+
+
+#
+# DWD has many ground pressure charts on https://opendata.dwd.de and EUMETCast
+# ----------------------------------------------------------------------------
+# dwdc
+# The Polar Stereographic Projection (stere) is easy to recognize and optimize.
+#
+# dwdn, dwda, dwdi
+# These three charts all use the same Lambert Conic Conformal Projection (lcc).
+# Difficult to optimize the lcc parameters as apparently it uses two parallels.
+# I went from ruler and pocket calculator to EXCEL and finally measured pixels
+# with Paint. Four pixel y values at lat 70°, 60°, 50°, 40° of a dwdn on a -35°
+# central meridian (549, 1155, 1790, 2467) was just the bare minimum information
+# needed to feed a homebrew C-program that finally returned  R, lat_1 and lat_2
+# using the Levenberg-Marquardt-algorithm (from public domain FORTRAN version of
+# Argonne National Laboratories MINPACK, C-translation by Steve Moshier, cleanups
+# by Eric A. Welsh and Ernst Lobsiger). Asked DWD hasn't found out what they use.
+#
+
+
+dwdc:
+  description: DWD Polar Stereographic (Ground Pressure Overlay)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 90.0
+    lon_0: 10.0
+  shape:
+    height: 3269
+    width:  4379
+  area_extent:
+    lower_left_xy:  [-8180000.0, -8086000.0]
+    upper_right_xy: [ 3920000.0,   933000.0]
+
+dwdn:
+  description: DWD Northern Atlantic (Ground Pressure Overlay)
+  projection:
+    proj: lcc
+    ellps: WGS84
+    lat_0: 55.0
+    lat_1: 82.907573
+    lat_2: 89.999999
+    lon_0: 10.0
+  shape:
+    height: 3114
+    width:  4389
+  area_extent:
+    lower_left_xy:  [-5368000.0, -3155000.0]
+    upper_right_xy: [ 3075000.0,  2820000.0]
+
+dwda:
+  description: DWD Western Europe (Ground Pressure Overlay)
+  projection:
+    proj: lcc
+    ellps: WGS84
+    lat_0: 55.0
+    lat_1: 82.907573
+    lat_2: 89.999999
+    lon_0: 0.0
+  shape:
+    height: 4695
+    width:  3790
+  area_extent:
+    lower_left_xy:  [-900500.0, -1611000.0]
+    upper_right_xy: [1522000.0,  1385500.0]
+
+dwdi:
+  description: DWD Central Europe (ICON13 Ground Pressure Overlay)
+  projection:
+    proj: lcc
+    ellps: WGS84
+    lat_0: 55.0
+    lat_1: 82.907573
+    lat_2: 89.999999
+    lon_0: 10.0
+  shape:
+    height: 1748
+    width:  2208
+  area_extent:
+    lower_left_xy: [-5370000.0, -3502000.0]
+    upper_right_xy: [3075000.0,  3165000.0]
+
+
+#
+# This chart is available on the Internet in different sizes, file types and qualities.
+# I rework and crop the s/l size analysis charts from "https://www.weathercharts.net".
+#
+
+ukmos:
+  description: UK MetOffice (Small size Ground Pressure Overlay)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0:  90.0
+    lon_0: -35.0
+  shape:
+    height: 727
+    width: 1074
+  area_extent:
+    lower_left_xy:  [-2173000.0, -6325000.0]
+    upper_right_xy: [ 6328000.0,  -587500.0]
+
+ukmol:
+  description: UK MetOffice (Fullsize Ground Pressure Overlay)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0:  90.0
+    lon_0: -35.0
+  shape:
+    height: 1452
+    width:  2148
+  area_extent:
+    lower_left_xy:  [-2180000.0, -6319000.0]
+    upper_right_xy: [ 6328000.0,  -588000.0]
+
+#
+# This XL version of the Bracknell chart comes as EDZW__*.tiff and has to be rotated first!
+#
+
+ukmox:
+  description: UK MetOffice (eXtra large Ground Pressure Overlay from EUMETCast, E1B-DWDSAT)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0:  90.0
+    lon_0: -35.0
+  shape:
+    height: 1589
+    width:  2351
+  area_extent:
+    lower_left_xy:  [-2178000.0, -6322000.0]
+    upper_right_xy: [ 6320000.0,  -589000.0]
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+# A couple of own areas I have added/used over the years. Some are for Sentinel-2X or Sentinel-1X.
+
+
+bahamas:
+  description: Bahamas
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 24.55
+    lon_0: -77.93
+  shape:
+    height: 1024
+    width: 1024
+  area_extent:
+    lower_left_xy: [-300000.0, -300000.0]
+    upper_right_xy: [300000.0,  300000.0]
+
+caribbean:
+  description: Caribbean
+  projection:
+    proj: merc
+    lat_0: 20.0
+    lon_0: -75.0
+    ellps: WGS84
+  shape:
+    height: 1793
+    width: 2783
+  area_extent:
+    lower_left_xy: [-2782987.269831839, 553583.8468157647]
+    upper_right_xy: [2782987.2698318395, 4139372.7622473035]
+
+svalbard:
+  description: Svalbard
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 78.5
+    lon_0: 20.0
+  shape:
+    height: 1024
+    width: 1024
+  area_extent:
+    lower_left_xy: [-300000.0, -300000.0]
+    upper_right_xy: [300000.0,  300000.0]
+
+newzeeland:
+  description: Discussing with Rob on MSG-1
+  projection:
+    proj: stere
+    ellps: WGS84
+    lon_0: 174.0
+    lat_0: -41.0
+  shape:
+    height: 1000
+    width:  1000
+  area_extent:
+    lower_left_xy:  [ -800000.0, -800000.0]
+    upper_right_xy: [ +800000.0, +800000.0]
+
+japan:
+  description: Japan (to use with Himawari-8)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0:  38.0
+    lon_0: 136.0
+  shape:
+    height: 1000
+    width: 1500
+  area_extent:
+    lower_left_xy: [-1500000.0, -1000000.0]
+    upper_right_xy: [1500000.0,  1000000.0]
+
+hawaii:
+  description: Hawaii (to use with GOES17/18)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0:   20.60
+    lon_0: -157.50
+  shape:
+    height: 1000
+    width: 1500
+  area_extent:
+    lower_left_xy: [-360000.0, -240000.0]
+    upper_right_xy: [360000.0,  240000.0]
+
+tcbislands:
+  description: South Sandwich Thule, Cook, Bellinghausen (Sentinel-2X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -59.439
+    lon_0: -27.238
+  shape:
+    height: 1500
+    width: 1500
+  area_extent:
+    lower_left_xy: [-15000.0, -15000.0]
+    upper_right_xy: [15000.0,  15000.0]
+
+leskov:
+  description: South Sandwich leskov (Sentinel-2X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -56.666
+    lon_0: -28.100
+  shape:
+    height: 1000
+    width: 1000
+  area_extent:
+    lower_left_xy: [-10000.0, -10000.0]
+    upper_right_xy: [10000.0,  10000.0]
+
+vindication:
+  description: South Sandwich vindication (Sentinel-2X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -57.117
+    lon_0: -26.818
+  shape:
+    height: 1000
+    width: 1000
+  area_extent:
+    lower_left_xy: [-10000.0, -10000.0]
+    upper_right_xy: [10000.0,  10000.0]
+
+visokoi:
+  description: South Sandwich visokoi (Sentinel-2X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -56.7061
+    lon_0: -27.1768
+  shape:
+    height: 1000
+    width: 1000
+  area_extent:
+    lower_left_xy: [-10000.0, -10000.0]
+    upper_right_xy: [10000.0,  10000.0]
+
+zavodovski:
+  description: South Sandwich zavodovski (Sentinel-2X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -56.2994
+    lon_0: -27.5776
+  shape:
+    height: 1000
+    width: 1000
+  area_extent:
+    lower_left_xy: [-10000.0, -10000.0]
+    upper_right_xy: [10000.0,  10000.0]
+
+sgeorgia_iw:
+  description: South Georgia from SAR-C GRDH IW (Sentinel-1X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -54.32
+    lon_0: -36.74
+  shape:
+    height: 4000
+    width: 4000
+  area_extent:
+    lower_left_xy: [-100000.0, -100000.0]
+    upper_right_xy: [100000.0, 100000.0]
+
+sgeorgia300:
+  description: Iceberg A-68a (SAR and Sentinel-2X)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -55.00
+    lon_0: -38.00
+  shape:
+    height: 2000
+    width: 2000
+  area_extent:
+    lower_left_xy: [-270000.0, -270000.0]
+    upper_right_xy: [270000.0, 270000.0]
+
+southgeorgia:
+  description: Iceberg A-68a (Metop-B/C, GOES-16)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: -54.32
+    lon_0: -36.74
+  shape:
+    height: 1000
+    width: 1000
+  area_extent:
+    lower_left_xy: [-500000.0, -500000.0]
+    upper_right_xy: [500000.0, 500000.0]
+
+westminster:
+  description: Oorder, ordeer ... (used for MSG4, adapt resolution for LEOs)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 51.5
+    lon_0: -0.1
+  shape:
+    height: 2048
+    width: 2048
+  area_extent:
+    lower_left_xy: [-2000000.0, -2000000.0]
+    upper_right_xy: [2000000.0, 2000000.0]
+
+oaserss:
+  description: Used for MSG3 rss (center is my station)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 46.8918
+    lon_0:  7.4989
+  shape:
+    height: 1024
+    width:  1536
+  area_extent:
+    lower_left_xy: [-3000000.0, -2000000.0]
+    upper_right_xy: [3000000.0,  2000000.0]
+
+cyprus:
+  description: Do not buy a home ... (best used with Sentinel-3A/B/X EFR)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 35.15
+    lon_0: 33.42
+  shape:
+    height: 1000
+    width: 1000
+  area_extent:
+    lower_left_xy: [-150000.0, -150000.0]
+    upper_right_xy: [150000.0, 150000.0]
+
+isleofman:
+  description: Isle of Man
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 54.228
+    lon_0: -4.532
+  shape:
+    height: 2048
+    width:  2048
+  area_extent:
+    lower_left_xy: [-600000.0, -600000.0]
+    upper_right_xy: [600000.0, 600000.0]
+
+isomrss:
+  description: Isle of Man (MSG3 RSS)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 54.228
+    lon_0: -4.532
+  shape:
+    height: 1024
+    width:  1024
+  area_extent:
+    lower_left_xy: [-600000.0, -600000.0]
+    upper_right_xy: [600000.0, 600000.0]
+
+switzerland:
+  description: Somewhere in Switzerland (higher resolution for Sentinel-3A/B/X EFR)
+  projection:
+    proj: stere
+    ellps: WGS84
+    lat_0: 46.88
+    lon_0: 8.15
+  shape:
+    height: 1000 # 750
+    width:  1333 # 1000
+  area_extent:
+    lower_left_xy: [-200000.0, -150000.0]
+    upper_right_xy: [200000.0, 150000.0]
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Below you find some areas.yaml as distributed in SatPy. Not all areas make sense
+# for all satellites. Always study the resolution of an instrument at SSP (Nadir).
+# SPS V 4.x scripts may use additional areas like 'eurol', 'spain', 'afghanistan',
+# 'germ' that are part of the SatPy distributed areas in .../satpy/etc/areas.yaml.
+# Please check this file for more areas and learn to construct your own favorites.
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+omerc_bb:
+  description: Oblique Mercator Bounding Box for Polar Overpasses
+  projection:
+    # The omerc projection does not work well with non-spherical ellipsoids.
+    ellps: sphere
+    proj: omerc
+  optimize_projection: True
+
+laea_bb:
+  description: Lambert Azimuthal Equal-Area Bounding Box for Polar Overpasses
+  projection:
+    ellps: WGS84
+    proj: laea
+  optimize_projection: True
+
+robinson:
+  description: robinson
+  projection:
+    proj: robin
+    lat_0: 70.0
+    lon_0: -45.0
+    ellps: WGS84
+  shape:
+    height: 3296
+    width: 4096
+  area_extent:
+    lower_left_xy: [-2049911.5256036147, 5326895.725982913]
+    upper_right_xy: [2049911.5256036168, 8625155.12857459]
+
+moll:
+  description: Mollweide aequiarea (pseudo conic projection)
+  projection:
+    proj: moll
+    lon_0: 0.0
+    ellps: WGS84
+  shape:
+    height: 1800
+    width: 3600
+  area_extent:
+    lower_left_xy: [-18040095.696147293, -9020047.848073646]
+    upper_right_xy: [18040095.696147293, 9020047.848073646]
+
+sinu:
+  description: Sinusoidal (resampling has problems)
+  projection:
+    proj: sinu
+    ellps: WGS84
+    lon_0: 0.0
+  shape:
+    height: 1800
+    width:  3600
+  area_extent:
+    lower_left_xy: [-20000000., -10000000.]
+    upper_right_xy: [20000000.,  10000000.]
+
+ortho:
+  description: Orthographic (testing date changes)
+  projection:
+    proj: ortho
+    ellps: WGS84
+    lat_0: 20.0
+    lon_0: 0.0
+  shape:
+    height: 1000
+    width:  1000
+  area_extent:
+    lower_left_xy: [-6378137., -6378137.]
+    upper_right_xy: [6378137.,  6378137.]
+
+#
+# ellps: sphere
+# R: 6370997.0
+# ellps: WGS84
+# a=6378137 rf=298.257223563
+#
+
+aitoff:
+  description: Aitoff pseudo conic (pycoast has problems)
+  projection:
+    proj: aitoff
+    ellps: WGS84
+  shape:
+    height: 1800
+    width: 3600
+  area_extent:
+    lower_left_xy: [-20037505.246998, -10018752.623499]
+    upper_right_xy: [20037505.246998,  10018752.653499]
+

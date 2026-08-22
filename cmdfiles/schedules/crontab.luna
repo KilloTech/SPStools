@@ -1,0 +1,210 @@
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+#
+#
+# Added for eluna graphing    E. Lobsiger
+# This starts at minutes 0,5,10,15,...,55
+*/5 * * * * root /var/www/eluna/update.pl > /dev/null 2>&1
+# Show a top on the web       E. Lobsiger
+*/2 * * * * root /usr/bin/top -b -n 1 > /var/www/txt/top.txt
+# Show 100 lines of recv_0.log  (BASIC) E. Lobsiger
+*/5 * * * * root /usr/bin/tail -n 100 /var/log/tellicast-client/recv_bas.log > /var/www/txt/recv_0.txt
+# Show 100 lines of recv_1.log  (HVS-1) E. Lobsiger
+*/5 * * * * root /usr/bin/tail -n 100 /var/log/tellicast-client/recv_hvs-1.log > /var/www/txt/recv_1.txt
+# Show 100 lines of recv_2.log  (HVS-2) E. Lobsiger
+*/5 * * * * root /usr/bin/tail -n 100 /var/log/tellicast-client/recv_hvs-2.log > /var/www/txt/recv_2.txt
+
+#
+# ****************************************
+# It is always good to RTFM: man 5 crontab
+# ****************************************
+# Crontab for Kallisto and Luna 2022-12-10
+#
+
+# Added for data transfer RAM disk /opt  -> /dev/md0
+# This starts at minutes 1,3,5,7,9, ... ,57,59
+0-59/1 * * * * root /root/bash/mvopt > /dev/null 2>&1
+
+# Added to delete files on /srv (deletes full days)
+51 23 * * * root /root/bash/rmoldstuff > /dev/null 2>&1
+
+# My CMD port and bash backport of Arne van Belle's TClogAnalyzer
+12 2 * * *  root  /root/bash/TClogSummary_0 yesterday > /dev/null 2>&1
+13 2 * * *  root  /root/bash/TClogSummary_1 yesterday > /dev/null 2>&1
+14 2 * * *  root  /root/bash/TClogSummary_2 yesterday > /dev/null 2>&1
+
+# Added for my TelliCastStatsCollector.cmd port of David and Arne
+29,59 * * * * root /root/bash/TelliCastStatsCollector_0 > /dev/null 2>&1
+29,59 * * * * root /root/bash/TelliCastStatsCollector_1 > /dev/null 2>&1
+29,59 * * * * root /root/bash/TelliCastStatsCollector_2 > /dev/null 2>&1
+
+
+# Defining variables makes the command lines below much shorter (RTFM).
+CMD=/home/eumetcast/SPStools/cmdfiles
+GEO=/home/eumetcast/SPStools/cmdfiles/GEO-pic.sh
+LEO=/home/eumetcast/SPStools/cmdfiles/LEO-pic.sh
+MOV=/home/eumetcast/SPStools/cmdfiles/GEO-mov.sh
+
+# This will start a PyTROLL/Satpy jobs running in miniconda3 as user eumetcast
+# GEOESX and HIMA8 satellites are now scheduled earlier after new measurements
+1-56/5  * * * * eumetcast $GEO MSG3-isomrss.py     -11min 200  >/dev/null 2>&1
+2-57/5  * * * * eumetcast $GEO MSG3-oaserss.py     -12min 200  >/dev/null 2>&1
+1-46/15 * * * * eumetcast $GEO MSG4-msg_fes_rss.py -31min 300  >/dev/null 2>&1
+2-47/15 * * * * eumetcast $GEO MSG2-msg_ioc_rss.py -32min 300  >/dev/null 2>&1
+0-50/10 * * * * eumetcast $GEO HIMA8-hima_f_rss.py   -40min 300 >/dev/null 2>&1
+5-55/10 * * * * eumetcast $GEO GOES16-goes_ef_rss.py -45min 300 >/dev/null 2>&1
+6-56/10 * * * * eumetcast $GEO GOES16-caribbean.py -46min 300 >/dev/null 2>&1
+7-57/10 * * * * eumetcast $GEO GOES18-goes_wf_rss.py -47min 300 >/dev/null 2>&1
+# Above MSG4 "frames" are made  .., 31, 46,.. so we start 5 minutes later
+35 * * * * eumetcast $GEO MSG4-westminster.py -35min 300  >/dev/null 2>&1
+39 * * * * eumetcast $GEO MSG2-afghanistan.py -39min 300  >/dev/null 2>&1
+
+# This starts ffmpeg jobs to make webm movies (last24h, hourly, except 2 UTC)
+3  0-1,3-23 * * * eumetcast $MOV  MSG3 ir_overview-oaserss last24h 0  >/dev/null 2>&1
+6  0-1,3-23 * * * eumetcast $MOV  MSG3 overview-oaserss last24h 0  >/dev/null 2>&1
+9  0-1,3-23 * * * eumetcast $MOV  MSG3 natural_with_night_fog-oaserss last24h 0  >/dev/null 2>&1
+12 0-1,3-23 * * * eumetcast $MOV  MSG3 ir_overview-isomrss last24h 0  >/dev/null 2>&1
+15 0-1,3-23 * * * eumetcast $MOV  MSG3 overview-isomrss last24h 0  >/dev/null 2>&1
+18 0-1,3-23 * * * eumetcast $MOV  MSG3 natural_with_night_fog-isomrss last24h 0  >/dev/null 2>&1
+21 0-1,3-23 * * * eumetcast $MOV  GOES16 airmass-goes_ef_rss last24h 0  >/dev/null 2>&1
+24 0-1,3-23 * * * eumetcast $MOV  GOES16 colorized_ir_clouds-goes_ef_rss last24h 0  >/dev/null 2>&1
+27 0-1,3-23 * * * eumetcast $MOV  GOES16 overview-goes_ef_rss last24h 0  >/dev/null 2>&1
+28 0-1,3-23 * * * eumetcast $MOV  GOES16 true_color_with_night_ir_hires-caribbean last24h 1  >/dev/null 2>&1
+30 0-1,3-23 * * * eumetcast $MOV  GOES18 airmass-goes_wf_rss last24h 0  >/dev/null 2>&1
+33 0-1,3-23 * * * eumetcast $MOV  GOES18 colorized_ir_clouds-goes_wf_rss last24h 0  >/dev/null 2>&1
+36 0-1,3-23 * * * eumetcast $MOV  GOES18 overview-goes_wf_rss last24h 0  >/dev/null 2>&1
+39 0-1,3-23 * * * eumetcast $MOV  HIMA8 airmass-hima_f_rss last24h 0  >/dev/null 2>&1
+42 0-1,3-23 * * * eumetcast $MOV  HIMA8 colorized_ir_clouds-hima_f_rss last24h 0  >/dev/null 2>&1
+45 0-1,3-23 * * * eumetcast $MOV  HIMA8 overview-hima_f_rss last24h 0  >/dev/null 2>&1
+48 0-1,3-23 * * * eumetcast $MOV  MSG4 airmass-msg_fes_rss last24h 0  >/dev/null 2>&1
+50 0-1,3-23 * * * eumetcast $MOV  MSG4 colorized_ir_clouds-msg_fes_rss last24h 0  >/dev/null 2>&1
+52 0-1,3-23 * * * eumetcast $MOV  MSG4 overview-msg_fes_rss last24h 0  >/dev/null 2>&1
+54 0-1,3-23 * * * eumetcast $MOV  MSG2 airmass-msg_ioc_rss last24h 0  >/dev/null 2>&1
+56 0-1,3-23 * * * eumetcast $MOV  MSG2 colorized_ir_clouds-msg_ioc_rss last24h 0  >/dev/null 2>&1
+58 0-1,3-23 * * * eumetcast $MOV  MSG2 overview-msg_ioc_rss last24h 0  >/dev/null 2>&1
+
+# This starts ffmpeg jobs to make webm movies (yesterday, archived at 2 UTC)
+3  2 * * * eumetcast $MOV  MSG3 ir_overview-oaserss yesterday 0  >/dev/null 2>&1
+6  2 * * * eumetcast $MOV  MSG3 overview-oaserss yesterday 0  >/dev/null 2>&1
+9  2 * * * eumetcast $MOV  MSG3 natural_with_night_fog-oaserss yesterday 0  >/dev/null 2>&1
+12 2 * * * eumetcast $MOV  MSG3 ir_overview-isomrss yesterday 0  >/dev/null 2>&1
+15 2 * * * eumetcast $MOV  MSG3 overview-isomrss yesterday 0  >/dev/null 2>&1
+18 2 * * * eumetcast $MOV  MSG3 natural_with_night_fog-isomrss yesterday 0  >/dev/null 2>&1
+21 2 * * * eumetcast $MOV  GOES16 airmass-goes_ef_rss yesterday 0  >/dev/null 2>&1
+24 2 * * * eumetcast $MOV  GOES16 colorized_ir_clouds-goes_ef_rss yesterday 0  >/dev/null 2>&1
+27 2 * * * eumetcast $MOV  GOES16 overview-goes_ef_rss yesterday 0  >/dev/null 2>&1
+28 2 * * * eumetcast $MOV  GOES16 true_color_with_night_ir_hires-caribbean yesterday 1  >/dev/null 2>&1
+30 2 * * * eumetcast $MOV  GOES18 airmass-goes_wf_rss yesterday 0  >/dev/null 2>&1
+33 2 * * * eumetcast $MOV  GOES18 colorized_ir_clouds-goes_wf_rss yesterday 0  >/dev/null 2>&1
+36 2 * * * eumetcast $MOV  GOES18 overview-goes_wf_rss yesterday 0  >/dev/null 2>&1
+39 2 * * * eumetcast $MOV  HIMA8 airmass-hima_f_rss yesterday 0  >/dev/null 2>&1
+42 2 * * * eumetcast $MOV  HIMA8 colorized_ir_clouds-hima_f_rss yesterday 0  >/dev/null 2>&1
+45 2 * * * eumetcast $MOV  HIMA8 overview-hima_f_rss yesterday 0  >/dev/null 2>&1
+48 2 * * * eumetcast $MOV  MSG4 airmass-msg_fes_rss yesterday 0  >/dev/null 2>&1
+50 2 * * * eumetcast $MOV  MSG4 colorized_ir_clouds-msg_fes_rss yesterday 0  >/dev/null 2>&1
+52 2 * * * eumetcast $MOV  MSG4 overview-msg_fes_rss yesterday 0  >/dev/null 2>&1
+54 2 * * * eumetcast $MOV  MSG2 airmass-msg_ioc_rss yesterday 0  >/dev/null 2>&1
+56 2 * * * eumetcast $MOV  MSG2 colorized_ir_clouds-msg_ioc_rss yesterday 0  >/dev/null 2>&1
+58 2 * * * eumetcast $MOV  MSG2 overview-msg_ioc_rss yesterday 0  >/dev/null 2>&1
+
+
+# Only one job per LEO satellite will run at a certain time {using flock()}.
+
+# Aqua:  Maximum timeliness 14143 seconds, overhead eurol DAY 12:57 + 05:00
+57 17 * * * eumetcast $LEO Aqua-eurol.py now DAY 300  >/dev/null 2>&1
+# Aqua:  Maximum timeliness 14143 seconds, overhead eurol NIG 02:11 + 05:00
+11 7 * * * eumetcast $LEO Aqua-eurol.py now NIG 300  >/dev/null 2>&1
+
+# Aqua:  Maximum timeliness 14143 seconds, overhead isleofman DAY 13:08 + 05:00
+8 18 * * * eumetcast $LEO Aqua-isleofman.py now DAY 300  >/dev/null 2>&1
+# Aqua:  Maximum timeliness 14143 seconds, overhead isleofman NIG 02:41 + 05:00
+41 7 * * * eumetcast $LEO Aqua-isleofman.py now NIG 300  >/dev/null 2>&1
+
+# Terra: Maximum timeliness 14324 seconds, overhead eurol DAY 10:55 + 05:00
+55 15 * * * eumetcast $LEO Terra-eurol.py now DAY 300  >/dev/null 2>&1
+# Terra: Maximum timeliness 14324 seconds, overhead eurol NIG 21:41 + 05:00
+41 2 * * * eumetcast $LEO Terra-eurol.py -5hours NIG 300  >/dev/null 2>&1
+
+# Terra: Maximum timeliness 14324 seconds, overhead isleofman DAY 11:25 + 05:00
+25 16 * * * eumetcast $LEO Terra-isleofman.py now DAY 300  >/dev/null 2>&1
+# Terra: Maximum timeliness 14324 seconds, overhead isleofman NIG 21:53 + 05:00
+53 2 * * * eumetcast $LEO Terra-isleofman.py -5hours NIG 300  >/dev/null 2>&1
+
+
+# Metop Global Data Service (GDS) /https://www.eumetsat.int/metop-gds
+# Timeliness AVHRR Level 1 =  2hrs 15mins / WORST CASE ADD 3hrs 6mins
+
+# Measured with own script MetopB: Maximum timeliness 3661 seconds
+# Overhead isleofman DAY 10:37 + 02:00
+37 12 * * * eumetcast $LEO MetopB-isleofman.py now DAY 300  >/dev/null 2>&1
+# Overhead isleofman NIG 20:59 + 02:00
+59 22 * * * eumetcast $LEO MetopB-isleofman.py now NIG 300  >/dev/null 2>&1
+
+# Measured with own script MetopC: Maximum timeliness 6266 seconds
+# Overhead isleofman DAY 10:38 + 02:45
+23 13 * * * eumetcast $LEO MetopC-isleofman.py now DAY 300  >/dev/null 2>&1
+# Overhead isleofman NIG 21:00 + 02:45
+45 23 * * * eumetcast $LEO MetopC-isleofman.py now NIG 300  >/dev/null 2>&1
+
+
+# For EARS disseminated LEO satellites add 50+30=80 Minutes to optimum overhead
+# FY3D: overhead svalbard DAY 09:08 + 01:20
+28 10 * * * eumetcast $LEO FY3D-svalbard.py now DAY 300  >/dev/null 2>&1
+# FY3D: overhead svalbard NIG 03:45 + 01:20
+5 5 * * * eumetcast $LEO FY3D-svalbard.py now NIG 300  >/dev/null 2>&1
+# NOAA20: overhead switzerland DAY 12:14 + 01:20
+33 13 * * * eumetcast $LEO NOAA20-switzerland.py now DAY 300  >/dev/null 2>&1
+# NOAA20: overhead switzerland NIG 01:30 + 01:20
+49 2 * * * eumetcast $LEO NOAA20-switzerland.py now NIG 300  >/dev/null 2>&1
+# SNPP: overhead switzerland DAY 12:14 + 01:20
+35 13 * * * eumetcast $LEO SNPP-switzerland.py now DAY 300  >/dev/null 2>&1
+# SNPP: overhead switzerland NIG 01:30 + 01:20
+51 2 * * * eumetcast $LEO SNPP-switzerland.py now NIG 300  >/dev/null 2>&1
+
+
+# Sentinel-3A and Sentinel-3B are expected overhead Switzerland 10:04 UTC
+# Maximum timeliness measured with own script S3A=10981 S3B=10621 seconds
+# We schedule Sentinel-3X satellites 10:04 + 3.05 hours + 1 hour (slack)!
+4  14 * * * eumetcast $LEO Sen3A-switzerland.py now DAY 300  >/dev/null 2>&1
+8  14 * * * eumetcast $LEO Sen3B-switzerland.py now DAY 300  >/dev/null 2>&1
+12 14 * * * eumetcast $LEO Sen3X-switzerland.py now DAY 300  >/dev/null 2>&1
+
+
+# Make four NOAA Ocean Prediction Center (OPC) overlays (Atlantic and Pacific)
+45 3-21/6 * * * eumetcast $CMD/OPC-overlays.sh  >/dev/null 2>&1
+# Make NOAA/OPC MSLP overlays every 6 hours for MSG4, GOES16, GOES18 and HIMA8
+50 3-21/6 * * * eumetcast $GEO MSG4-MSLP-opcae.py   -230min 300  >/dev/null 2>&1
+53 3-21/6 * * * eumetcast $GEO GOES16-MSLP-opcaw.py -233min 300  >/dev/null 2>&1
+56 3-21/6 * * * eumetcast $GEO GOES18-MSLP-opcpe.py -236min 300  >/dev/null 2>&1
+59 3-21/6 * * * eumetcast $GEO HIMA8-MSLP-opcpw.py  -239min 300  >/dev/null 2>&1
+
+# Make UK-MetOffice (UKMO) small/large/xlarge overlays. To be optimized ...
+5  2,8,14,20 * * * eumetcast $CMD/UKMO-overlays.sh  >/dev/null 2>&1
+10 2,8,14,20 * * * eumetcast $CMD/DWDSAT-overlays.py  >/dev/null 2>&1
+15 2,8,14,20 * * * eumetcast $GEO MSG4-MSLP-ukmox.py -135min 300  >/dev/null 2>&1
+
+# Make Deutscher Wetter Dienst (DWD) overlays. To be optimized ...
+0 * * * * eumetcast $CMD/DWD-overlays.sh  >/dev/null 2>&1
+30 1-22/3 * * * eumetcast $GEO MSG4-MSLP-dwdx.py -270min 300  >/dev/null 2>&1
+
+# Tydy old EUMETCast frames, images, movies, etc.
+20 0 * * * eumetcast $CMD/tidy.sh >/dev/null 2>&1

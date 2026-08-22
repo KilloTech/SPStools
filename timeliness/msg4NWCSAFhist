@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# To cron Meteosat-11 (msg4) NWCSAF we look for the timeliness of CT files only
+# Oase, 2022/12/06                                                  E. Lobsiger
+
+# Typical naming of MSG4 NWC-SAF files (CT, CMA, CTTH, see ../etc/nwcsaf-geo.yaml)
+# File_patterns: S_NWC_CT_{platform_id}_{region_id}_{start_time:%Y%m%dT%H%M%S}Z.nc
+# Example name : S_NWC_CT_MSG4_MSG-N-VISIR_20220513T181500Z.nc
+# Hugo's ruler : 012345678901234567890123456789012345678901234
+# copied EMCV  : 0         1         2         3         4
+# EUMETCast    : These files arrive as above in channel E1B-GEO-4 (Basic)
+
+mint=100000
+maxt=0
+minp=0
+maxp=30
+sat="MSG4-NWCSAF"
+chann="E1B-GEO-4"
+color="orange"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On BASIC Service channel E1B-GEO-4
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+    # This is for satellite MSG4 (ClodTop files only)
+    for name in `ls -rt S_NWC_CT_MSG4_MSG-N-VISIR_*`
+    do
+        yea=${name:26:4}
+        mon=${name:30:2}
+        day=${name:32:2}
+        hou=${name:35:2}
+        min=${name:37:2}
+        start=`date -d "$yea-$mon-$day $hou:$min" "+%s" `
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$(((trans - start)/60))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt; \
+           minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" GEO-TPGX.plt

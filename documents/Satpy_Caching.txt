@@ -1,0 +1,76 @@
+---------------------------------------------------------------------------------------
+All I learnt about SatPy caching when producing images                   Ernst Lobsiger
+---------------------------------------------------------------------------------------
+
+Caching is a feature you should only use if you produce many products with a scheduler.
+An application is e.g. making 5min RSS frames for 'dust' and 'ash' of a volcano eruption.
+
+
+A) Projection caching (GEO satellites only, original data has constant geographic layout)
+
+When you resample (reproject) the original data as seen from the GEO satellite to a user
+defined area, then depending on your resampler options, SatPy will produce area dependant
+lookup tables for the projection of the data. More than one lookup table will be used if
+your satellite data has different resolutions (e.g. composites using seviri 'HRV'). When
+GEOcache is switched on, SatPy/Pyresample makes a hash of your 'area' (yaml or area_def?)
+and looks for lookup table (lut) directories (or sets them up when missing) of the form:
+
+nn_lut-1da10292445ed4dc671dea0785447aa1cc2913f2.zarr      When using resampler='nearest'
+bil_lut-3ca4c51d6fc1438c2354bf8911777233fc0146da.zarr     When using resampler='bilinear'
+
+No lut files are produced when using resampler='gradient_search' (install shapely first).
+The fastest resampler is 'nearest' (default). The slowest is 'bilinear' but once cached
+it can be as fast as resampler='gradient_search', method='bilinear' with similar results.
+
+
+B) Overlay caching (GEO and LEO satellites, but cannot be used with LEO dynamic bb areas)
+
+If overlays are used and OVRcache is ON Pycoast makes a hash of the 'area' (yaml or area_def?)
+and the whole overlays dictionary (coasts, borders, rivers, grid, points and more ...). It
+then produces a mostly transparent overlay file with a user choosable prefix, an underline,
+a hash and a *.png suffix. I use 'area' as prefix, so my overlay cache images have names like:
+
+westminster_261129563374870086_35748414afb6d1c538ca288e77f46b5a5231b69d86bcdf29ac2f21a14bb55f10.png
+
+Next time Pycoast will calculate the hash and compare with names of available overlay *.png
+images. If it finds a *.png image with the current hash in the name it uses this as overlay.
+If the hash has changed (because you e.g. changed the colour of coastlines) an new overlay
+*.png image will be created. Note that adding a single point, which does not even make it on
+the final image, because it was defined outside the area_extent, will ask for a new *.png.
+
+
+C) Tests made on a 10 years old PC with Intel XEON and 16GB RAM
+
+Times found in (real) seconds when making 5 different MSG4 composites area 'westminster'.
+All hrit files have been xRITDecompressed beforehand. Many Pycoast overlay features only
+available in the current main branch (2022/07/01) have been used to produce coastlines,
+borders, rivers, semitransparent filled lakes using shapefiles, grid, city circles using
+cities, EARS network using star5 points and a station marker using triangle text points.
+
+Three different resamplers have been testet, numbers indicate (real) seconds using time:
+
+.., resampler='nearest', radius_of_influence=20000, reduce_data=False)
+1 No caching (cache emptied)    42
+2 Switching both ON             80  (setting up GEOcache luts takes time)
+3 GEOcache ON only              34
+4 GEOcache ON + OVRcache ON     16
+
+.., resampler='bilinear', reduce_data=True)
+1 No caching (cache emptied)   138
+2 Switching both ON            152  (setting up GEOcache luts takes time)
+3 GEOcache ON only              50
+4 GEOcache ON + OVRcache ON     29
+
+.., resampler='gradient_search', method='bilinear', reduce_data=False)
+1 No caching (cache emptied)    51
+2 Switching both ON             51  (setting GEOcache ON has no effect)
+3 GEOcache ON only              50
+4 GEOcache ON + OVRcache On     29
+
+Image production has been performed with "global_scene.load(composites, generate=False)".
+Times include the generation and addition of an annotation at left using ImageMagick (IM).
+All tests have been done under GNU/Linux. Tests on a similar Windows PC 2-3 times slower.
+
+
+Belp, 2022/07/01                                                          Ernst Lobsiger
+

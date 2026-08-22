@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# To cron Sentinel-3B (S3A) we look for the timeliness of all files first.
+# Oase, 2022/12/06                                             E. Lobsiger
+
+# File Pattern : {mission_id:3s}_OL_1_{datatype_id:_<6s}_{start_time:%Y%m%dT%H%M%S}_{end_time:%Y%m%dT%H%M%S}_{creation_time:%Y%m%dT%H%M%S}_{duration:4d}_{cycle:3d}_{relative_orbit:3d}_{frame:4d}_{centre:3s}_{platform_mode:1s}_{timeliness:2s}_{collection:3s}.SEN3.tar
+# Example name : S3B_OL_1_ERR____20220520T003318_20220520T011743_20220520T031351_2665_085_259______MAR_O_NR_002.SEN3.tar
+# Hugo's ruler : 0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012
+# copied EMCV  : 0         1         2         3         4         5         6         7         8         9         10
+
+maxt=0
+mint=100000
+minp=100
+maxp=250
+sat="S3B-ERR"
+chann="E2H-S3B-02"
+color="dark-grey"
+here=`pwd`
+dat1=`date -u -d "-5 days" +%Y/%m/%d`
+dat2=`date -u -d "-1 days" +%Y/%m/%d`
+rm -f $here/timeliness.txt
+# On HVS-2 Service Channel E2H-S3B-02
+for n in -5 -4 -3 -2 -1
+do
+    thisday=`date -u -d "$n days" +%Y/%m/%d`
+    cd "/srv/$chann/$thisday"
+    # This is for satellite Sentinel-3B (ERR)
+    for name in `ls -rt S3B_OL_1_ERR_*.tar`
+        do
+        yea=${name:16:4}
+        mon=${name:20:2}
+        day=${name:22:2}
+        hou=${name:25:2}
+        min=${name:27:2}
+        start=`date -d "$yea-$mon-$day $hou:$min" "+%s" `
+        trans=`stat -c "%Y" $name`
+        # You should run your receiver/processor under UTC!
+        # trans=`date -u -d "1970-01-01 $trans seconds" "+%s"`
+        timeliness=$(((trans - start)/60))
+        if (( timeliness > maxt )); then maxt=$timeliness; fi
+        if (( timeliness < mint )); then mint=$timeliness; fi
+        echo $timeliness >> $here/timeliness.txt
+    done
+done
+cd $here
+gnuplot -e "sat='$sat'; dat1='$dat1'; dat2='$dat2'; mint=$mint; maxt=$maxt;\
+            minp=$minp; maxp=$maxp; chann='$chann'; color='$color'" LEO-SATS.plt
