@@ -124,6 +124,9 @@ sat_dict = {'GOES16': 'GOES-16',
             'NOAAX': 'NOAA-X',
             'FY3D': 'FY-3D'}
 
+# Celestrak/pyorbital TLE lookup uses different names than our internal sat_dict for some platforms
+tle_name_override = {'FY-3D': 'FENGYUN 3D'}
+
 
 # ********************************************************
 # Polar orbiting satellites NOAA20, SNPP, instrument viirs
@@ -1285,7 +1288,7 @@ def leo_images(Yea, Mon, Day, sat, NoD, multi, segdir, decomp, isbulk, reader, c
         ran_plus = ran + dsec * 0.06
         cosran = cos(ran_plus * dr)
         off0, pathpat1, pathpat2 = get_off0_pp1_pp2(Yea, Mon, Day, dt0, dt1, dt2, segdir, pat, hyp, hasdoy, isbulk)
-        orb = Orbital(satellite, tlefil)
+        orb = Orbital(tle_name_override.get(satellite, satellite), tlefil)
 
         files = glob(pathpat1 + '1000M' + suff)
         geo1k = glob(pathpat1 + 'GEO1K' + suff)
