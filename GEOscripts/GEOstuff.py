@@ -88,7 +88,7 @@ resampler_kwargs = {'resampler': 'nearest', 'radius_of_influence': 20000, 'reduc
 
 # Short satellite names. These cannot contain a hyphen '-'. Only GEO sats are used in this module.
 sat_list = ['GOES16', 'GOES17', 'GOES18', 'GOES19', 'HIMA8', 'MSG2', 'MSG3', 'MSG4', 'MTI1', 'MetopB', 'MetopC',
-            'MetopX', 'Aqua', 'Terra', 'Sen3A', 'Sen3B', 'Sen3X', 'SNPP', 'NOAA20']
+            'MetopX', 'Aqua', 'Terra', 'Sen3A', 'Sen3B', 'Sen3X', 'SNPP', 'NOAA20', 'ElectroL']
 
 # Long satellite names. These are the ones in platforms.txt. Only GEO sats are used in this module.
 sat_dict = {'GOES16': 'GOES-16',
@@ -109,7 +109,8 @@ sat_dict = {'GOES16': 'GOES-16',
             'Sen3B': 'Sentinel-3B',
             'Sen3X': 'Sentinel-3X',
             'SNPP': 'Suomi-NPP',
-            'NOAA20': 'NOAA-20'}
+            'NOAA20': 'NOAA-20',
+            'ElectroL': 'Electro-L N3'}
 
 # *******************************************************
 # Geostationary satellites GOES16, GOES17, instrument abi
