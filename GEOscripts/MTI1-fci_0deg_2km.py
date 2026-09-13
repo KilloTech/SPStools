@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # USAGE: MTI1-fci_0deg_2km.py YYYYmmddHHMM
-# Satellite MTI-1 (MTG-I1) - Full disk FCI | Europe (eurol)
+# Satellite MTI-1 (MTG-I1) - Full disk FCI | Europe (eurol1)
 # Reader: fci_l1c_nc | Segdir: /home/sps/received/hvs-2/E2H-MTG-1
 # License GPL3 (c) Ernst Lobsiger / INGV adaptation
 
@@ -18,7 +18,7 @@ decomp  = False
 
 composites = ['colorized_ir_clouds', 'airmass', 'dust']
 
-areas = ['fci_0deg_2km', 'eurol']    # full disk + European detail
+areas = ['fci_0deg_2km', 'eurol1']    # full disk + European detail (eurol1: ~0.77km/px vs eurol 3km/px)
 
 area_cities = []
 ADDcoasts  = True
