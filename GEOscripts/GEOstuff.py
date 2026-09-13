@@ -737,7 +737,12 @@ def get_files(Yea, Mon, Day, Hou, Min, sat, segdir, decomp, isbulk, reader, comp
                     cycle_start[_cyc] = _ft
                 cycle_files.setdefault(_cyc, []).append(_f)
         if cycle_start:
-            best = min(cycle_start, key=lambda c: abs((cycle_start[c]-slot_dt).total_seconds()))
+            # Preferisci cicli con tutti i 40 chunk arrivati: un ciclo ancora in fase
+            # di scaricamento puo' essere "piu' vicino" allo slot orario ma incompleto,
+            # producendo dati vuoti/neri dopo il resample su aree piccole (es. eurol).
+            complete = {c: t for c, t in cycle_start.items() if len(cycle_files[c]) >= 40}
+            candidates = complete if complete else cycle_start
+            best = min(candidates, key=lambda c: abs((cycle_start[c]-slot_dt).total_seconds()))
             files = cycle_files[best]
         else:
             files = [f for f in all_nc if 'BODY' in f and '_0041.nc' not in f]
