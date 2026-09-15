@@ -88,7 +88,7 @@ resampler_kwargs = {'resampler': 'nearest', 'radius_of_influence': 20000, 'reduc
 
 # Short satellite names. These cannot contain a hyphen '-'. Only GEO sats are used in this module.
 sat_list = ['GOES16', 'GOES17', 'GOES18', 'GOES19', 'HIMA8', 'MSG2', 'MSG3', 'MSG4', 'MTI1', 'MetopB', 'MetopC',
-            'MetopX', 'Aqua', 'Terra', 'Sen3A', 'Sen3B', 'Sen3X', 'SNPP', 'NOAA20', 'ElectroL', 'MTILI']
+            'MetopX', 'Aqua', 'Terra', 'Sen3A', 'Sen3B', 'Sen3X', 'SNPP', 'NOAA20', 'ElectroL', 'MTILI', 'MODISOC']
 
 # Long satellite names. These are the ones in platforms.txt. Only GEO sats are used in this module.
 sat_dict = {'GOES16': 'GOES-16',
@@ -111,7 +111,8 @@ sat_dict = {'GOES16': 'GOES-16',
             'SNPP': 'Suomi-NPP',
             'NOAA20': 'NOAA-20',
             'ElectroL': 'Electro-L N3',
-            'MTILI': 'MTG-I1 (LI)'}
+            'MTILI': 'MTG-I1 (LI)',
+            'MODISOC': 'Aqua MODIS (Ocean Color)'}
 
 # *******************************************************
 # Geostationary satellites GOES16, GOES17, instrument abi
@@ -1010,6 +1011,7 @@ def get_overlays(sat, composite, area, area_cities, height, width, ADDcoasts, AD
     sat_cities_dict = { \
                 'MTI1': ['Berlin', 'London', 'Paris', 'Madrid', 'Rome'],  # DEBUG for MTI1 test data
                 'MTILI': ['Berlin', 'London', 'Paris', 'Madrid', 'Rome'],
+                'MODISOC': ['Berlin', 'London', 'Paris', 'Madrid', 'Rome'],
                 'MSG4': ['Berlin', 'London', 'Paris', 'Madrid', 'Rome'],
                 'MSG3': ['Berlin', 'London', 'Paris', 'Madrid', 'Rome'],
                 'MSG2': ['Cairo', 'Cape Town', 'Herat', 'Kabul', 'New Delhi'],
