@@ -69,7 +69,14 @@ if len(trail_candidates) != 1:
 trail_file = trail_candidates[0]
 cycle_id = trail_file.rsplit('_O_', 1)[1].split('_')[0]
 
-body_files = [f for f in all_files if 'BODY' in f and f'_O_{cycle_id}_' in f]
+# Il numero di ciclo si azzera ogni giorno a mezzanotte UTC e si ripete
+# (es. ciclo 0061 esiste sia il giorno D che il giorno D+1): con file di
+# piu' giorni presenti in segdir (retention), filtrare solo per cycle_id
+# puo' raccogliere 40 chunk BODY invece di 20 (chunk di due giorni diversi
+# con lo stesso numero di ciclo). Richiediamo anche la data del giorno target.
+date_prefix = Yea + Mon + Day
+body_files = [f for f in all_files
+              if 'BODY' in f and f'_O_{cycle_id}_' in f and date_prefix in f]
 
 if len(body_files) != 20:
     sys.exit(f'Sorry, no good files found (ciclo {cycle_id}: {len(body_files)}/20 chunk BODY presenti) ...')
