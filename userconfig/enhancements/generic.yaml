@@ -1,0 +1,630 @@
+enhancements:
+  # Palette convertite da UW-SIFT 1.2.0 (CIMSS/SSEC), collezione OAX (NWS).
+  # Origine: D:\SIFT_1.2.0\Lib\site-packages\uwsift\data\colormaps\OAX
+  # I range min/max sono valori tipici operativi (K/mm/% a seconda del prodotto):
+  # per i prodotti che NON produciamo ancora (CAPE, ACTP, ADP, RRQPE, ...) sono
+  # stime ragionevoli da verificare quando/se quel prodotto verra' generato.
+
+  oax_cloud_amount_default:
+    standard_name: oax_cloud_amount_default
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/cloud_amount_default.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 100
+    # Cloud Amount Default | % copertura nuvolosa | 256 colori
+
+  oax_cloud_top_height:
+    standard_name: oax_cloud_top_height
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/cloud_top_height.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 18000
+    # Cloud Top Height | metri | 256 colori
+
+  oax_low_cloud_base:
+    standard_name: oax_low_cloud_base
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/low_cloud_base.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 4000
+    # Low Cloud Base | metri | 256 colori
+
+  oax_prob_severe:
+    standard_name: oax_prob_severe
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/prob_severe.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 100
+    # prob_severe | % probabilita' | 256 colori
+
+  oax_rain_rate:
+    standard_name: oax_rain_rate
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/rain_rate.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 50
+    # Rain Rate | mm/h | 256 colori
+
+  oax_actp:
+    standard_name: oax_actp
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/actp.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 6
+    # ACTP | categoria cloud-type (0-6) | 7 colori
+
+  oax_adp:
+    standard_name: oax_adp
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/adp.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 8
+    # ADP | categoria aerosol detection (0-8) | 9 colori
+
+  oax_color_cape_10:
+    standard_name: oax_color_cape_10
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/color-cape-10.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 6000
+    # color-cape-10 | J/kg CAPE | 1024 colori
+
+  oax_color_li_10:
+    standard_name: oax_color_li_10
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/color-li-10.npy
+              color_scale: 1
+              min_value: -10
+              max_value: 15
+    # color-li-10 | Lifted Index (C) | 1024 colori
+
+  oax_color_pw10_10:
+    standard_name: oax_color_pw10_10
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/color-pw10-10.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 75
+    # color-pw10-10 | mm precipitable water | 1024 colori
+
+  oax_color_pw8_10:
+    standard_name: oax_color_pw8_10
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/color-pw8-10.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 60
+    # color-pw8-10 | mm precipitable water | 1024 colori
+
+  oax_csm:
+    standard_name: oax_csm
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/csm.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 2
+    # CSM | categoria clear-sky-mask (0-2) | 3 colori
+
+  oax_dust:
+    standard_name: oax_dust
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/dust.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 2
+    # Dust | categoria dust detection (0-2) | 3 colori
+
+  oax_fsc:
+    standard_name: oax_fsc
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/fsc.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 100
+    # FSC | % copertura neve frazionaria | 451 colori
+
+  oax_goes_sst_35:
+    standard_name: oax_goes_sst_35
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/goes-sst-35.npy
+              color_scale: 1
+              min_value: 271.15
+              max_value: 308.15
+    # GOES-SST-35 | K (SST -2..35 C) | 256 colori
+
+  oax_rrqpe:
+    standard_name: oax_rrqpe
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/rrqpe.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 50
+    # RRQPE | mm/h rainfall rate QPE | 600 colori
+
+  oax_rrqpe1:
+    standard_name: oax_rrqpe1
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/rrqpe1.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 50
+    # RRQPE1 | mm/h rainfall rate QPE | 256 colori
+
+  oax_smoke:
+    standard_name: oax_smoke
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/smoke.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 2
+    # Smoke | categoria smoke detection (0-2) | 3 colori
+
+  oax_vtrsb:
+    standard_name: oax_vtrsb
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/GOESR-L2/vtrsb.npy
+              color_scale: 1
+              min_value: -10
+              max_value: 10
+    # VTRSB | K differenza split-window (ash/BTD) | 1251 colori
+
+  oax_cira_ir_default:
+    standard_name: oax_cira_ir_default
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/cira_ir_default.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # CIRA (IR Default) | K brightness temperature IR | 256 colori
+
+  oax_dust_and_moisture_split_window:
+    standard_name: oax_dust_and_moisture_split_window
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/dust_and_moisture_split_window.npy
+              color_scale: 1
+              min_value: -6
+              max_value: 3
+    # dust_and_moisture_split_window | K differenza split-window | 2048 colori
+
+  oax_enhanced_rainbow_11:
+    standard_name: oax_enhanced_rainbow_11
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/enhanced-rainbow-11.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # enhanced-rainbow-11 | K brightness temperature IR | 2048 colori
+
+  oax_enhanced_rainbow_warmer_yellow:
+    standard_name: oax_enhanced_rainbow_warmer_yellow
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/enhanced-rainbow_warmer_yellow.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # enhanced-rainbow_warmer_yellow | K brightness temperature IR | 2947 colori
+
+  oax_fire_detection_3_9:
+    standard_name: oax_fire_detection_3_9
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/fire_detection_3.9.npy
+              color_scale: 1
+              min_value: 270
+              max_value: 400
+    # fire_detection_3.9 | K brightness temperature SWIR 3.9um | 2048 colori
+
+  oax_fogdiff_blue:
+    standard_name: oax_fogdiff_blue
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/fogdiff_blue.npy
+              color_scale: 1
+              min_value: -10
+              max_value: 10
+    # fogdiff_blue | K differenza fog product (3.9-10.7) | 2048 colori
+
+  oax_ir_wv:
+    standard_name: oax_ir_wv
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/ir_wv.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # IR WV | K brightness temperature IR | 256 colori
+
+  oax_ir_color_clouds_summer:
+    standard_name: oax_ir_color_clouds_summer
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/ir_color_clouds_summer.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # IR_Color_Clouds_Summer | K brightness temperature IR | 2048 colori
+
+  oax_ir_color_clouds_winter:
+    standard_name: oax_ir_color_clouds_winter
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/ir_color_clouds_winter.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # IR_Color_Clouds_Winter | K brightness temperature IR | 2048 colori
+
+  oax_rainbow_11_bit:
+    standard_name: oax_rainbow_11_bit
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/rainbow_11_bit.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # Rainbow_11_bit | K brightness temperature IR | 2048 colori
+
+  oax_ramsdis_ir_12bit:
+    standard_name: oax_ramsdis_ir_12bit
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/ramsdis_ir_12bit.npy
+              color_scale: 1
+              min_value: 183
+              max_value: 330
+    # ramsdis_IR_12bit | K brightness temperature IR | 4096 colori
+
+  oax_ramsdis_wv_12bit:
+    standard_name: oax_ramsdis_wv_12bit
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/ramsdis_wv_12bit.npy
+              color_scale: 1
+              min_value: 200
+              max_value: 280
+    # ramsdis_WV_12bit | K brightness temperature WV | 4096 colori
+
+  oax_wv_dry_yellow:
+    standard_name: oax_wv_dry_yellow
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/IR/wv_dry_yellow.npy
+              color_scale: 1
+              min_value: 200
+              max_value: 280
+    # WV_Dry_Yellow | K brightness temperature WV | 2048 colori
+
+  oax_lifted_index___new_cimss_table:
+    standard_name: oax_lifted_index___new_cimss_table
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Lifted Index/lifted_index_-_new_cimss_table.npy
+              color_scale: 1
+              min_value: -10
+              max_value: 15
+    # Lifted Index - New CIMSS Table | Lifted Index (C) | 256 colori
+
+  oax_lifted_index_default:
+    standard_name: oax_lifted_index_default
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Lifted Index/lifted_index_default.npy
+              color_scale: 1
+              min_value: -10
+              max_value: 15
+    # Lifted Index Default | Lifted Index (C) | 256 colori
+
+  oax_blended_total_precip_water:
+    standard_name: oax_blended_total_precip_water
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Precip/blended_total_precip_water.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 75
+    # Blended Total Precip Water | mm precipitable water | 256 colori
+
+  oax_percent_of_normal_tpw:
+    standard_name: oax_percent_of_normal_tpw
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Precip/percent_of_normal_tpw.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 200
+    # Percent of Normal TPW | % del normale | 256 colori
+
+  oax_precip_water___new_cimss_table:
+    standard_name: oax_precip_water___new_cimss_table
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Precip/precip_water_-_new_cimss_table.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 75
+    # Precip Water - New CIMSS Table | mm precipitable water | 256 colori
+
+  oax_precip_water___polar:
+    standard_name: oax_precip_water___polar
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Precip/precip_water_-_polar.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 60
+    # Precip Water - Polar | mm precipitable water | 256 colori
+
+  oax_precip_water_default:
+    standard_name: oax_precip_water_default
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Precip/precip_water_default.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 75
+    # Precip Water Default | mm precipitable water | 256 colori
+
+  oax_skin_temp___new_cimss_table:
+    standard_name: oax_skin_temp___new_cimss_table
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Skin Temp/skin_temp_-_new_cimss_table.npy
+              color_scale: 1
+              min_value: 230
+              max_value: 330
+    # Skin Temp - New CIMSS Table | K skin temperature | 256 colori
+
+  oax_skin_temp_default:
+    standard_name: oax_skin_temp_default
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/Skin Temp/skin_temp_default.npy
+              color_scale: 1
+              min_value: 230
+              max_value: 330
+    # Skin Temp Default | K skin temperature | 256 colori
+
+  oax_ca_low_light_vis:
+    standard_name: oax_ca_low_light_vis
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/VIS/ca_low_light_vis.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 1
+    # CA (Low Light Vis) | riflettanza 0-1 | 256 colori
+
+  oax_linear:
+    standard_name: oax_linear
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/VIS/linear.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 1
+    # Linear | riflettanza 0-1 | 256 colori
+
+  oax_vis_gray_sq_root_12:
+    standard_name: oax_vis_gray_sq_root_12
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/VIS/vis_gray_sq-root-12.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 1
+    # VIS_gray_sq-root-12 | riflettanza 0-1 | 4097 colori
+
+  oax_za_vis_default:
+    standard_name: oax_za_vis_default
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/VIS/za_vis_default.npy
+              color_scale: 1
+              min_value: 0
+              max_value: 1
+    # ZA (Vis Default) | riflettanza 0-1 | 256 colori
+
+  oax_gray_scale_water_vapor:
+    standard_name: oax_gray_scale_water_vapor
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/WV/gray_scale_water_vapor.npy
+              color_scale: 1
+              min_value: 200
+              max_value: 280
+    # Gray Scale Water Vapor | K brightness temperature WV | 256 colori
+
+  oax_nssl_vas_wv_alternate:
+    standard_name: oax_nssl_vas_wv_alternate
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/WV/nssl_vas_wv_alternate.npy
+              color_scale: 1
+              min_value: 200
+              max_value: 280
+    # NSSL VAS (WV Alternate) | K brightness temperature WV | 256 colori
+
+  oax_slc_wv:
+    standard_name: oax_slc_wv
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - filename: palettes/OAX/GOES-R/WV/slc_wv.npy
+              color_scale: 1
+              min_value: 200
+              max_value: 280
+    # SLC WV | K brightness temperature WV | 256 colori

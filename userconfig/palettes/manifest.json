@@ -1,0 +1,290 @@
+[
+  {
+    "source": "OAX/Cloud Amount Default.cmap",
+    "npy": "OAX/cloud_amount_default.npy",
+    "name": "Cloud Amount Default",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/Cloud Top Height.cmap",
+    "npy": "OAX/cloud_top_height.npy",
+    "name": "Cloud Top Height",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/Low Cloud Base.cmap",
+    "npy": "OAX/low_cloud_base.npy",
+    "name": "Low Cloud Base",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/prob_severe.cmap",
+    "npy": "OAX/prob_severe.npy",
+    "name": "prob_severe",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/Rain Rate.cmap",
+    "npy": "OAX/rain_rate.npy",
+    "name": "Rain Rate",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/ACTP.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/actp.npy",
+    "name": "ACTP",
+    "n_colors": 7
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/ADP.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/adp.npy",
+    "name": "ADP",
+    "n_colors": 9
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/color-cape-10.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/color-cape-10.npy",
+    "name": "color-cape-10",
+    "n_colors": 1024
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/color-li-10.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/color-li-10.npy",
+    "name": "color-li-10",
+    "n_colors": 1024
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/color-pw10-10.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/color-pw10-10.npy",
+    "name": "color-pw10-10",
+    "n_colors": 1024
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/color-pw8-10.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/color-pw8-10.npy",
+    "name": "color-pw8-10",
+    "n_colors": 1024
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/CSM.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/csm.npy",
+    "name": "CSM",
+    "n_colors": 3
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/Dust.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/dust.npy",
+    "name": "Dust",
+    "n_colors": 3
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/FSC.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/fsc.npy",
+    "name": "FSC",
+    "n_colors": 451
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/GOES-SST-35.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/goes-sst-35.npy",
+    "name": "GOES-SST-35",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/RRQPE.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/rrqpe.npy",
+    "name": "RRQPE",
+    "n_colors": 600
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/RRQPE1.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/rrqpe1.npy",
+    "name": "RRQPE1",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/Smoke.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/smoke.npy",
+    "name": "Smoke",
+    "n_colors": 3
+  },
+  {
+    "source": "OAX/GOES-R/GOESR-L2/VTRSB.cmap",
+    "npy": "OAX/GOES-R/GOESR-L2/vtrsb.npy",
+    "name": "VTRSB",
+    "n_colors": 1251
+  },
+  {
+    "source": "OAX/GOES-R/IR/CIRA (IR Default).cmap",
+    "npy": "OAX/GOES-R/IR/cira_ir_default.npy",
+    "name": "CIRA (IR Default)",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/IR/dust_and_moisture_split_window.cmap",
+    "npy": "OAX/GOES-R/IR/dust_and_moisture_split_window.npy",
+    "name": "dust_and_moisture_split_window",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/enhanced-rainbow-11.cmap",
+    "npy": "OAX/GOES-R/IR/enhanced-rainbow-11.npy",
+    "name": "enhanced-rainbow-11",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/enhanced-rainbow_warmer_yellow.cmap",
+    "npy": "OAX/GOES-R/IR/enhanced-rainbow_warmer_yellow.npy",
+    "name": "enhanced-rainbow_warmer_yellow",
+    "n_colors": 2947
+  },
+  {
+    "source": "OAX/GOES-R/IR/fire_detection_3.9.cmap",
+    "npy": "OAX/GOES-R/IR/fire_detection_3.9.npy",
+    "name": "fire_detection_3.9",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/fogdiff_blue.cmap",
+    "npy": "OAX/GOES-R/IR/fogdiff_blue.npy",
+    "name": "fogdiff_blue",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/IR WV.cmap",
+    "npy": "OAX/GOES-R/IR/ir_wv.npy",
+    "name": "IR WV",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/IR/IR_Color_Clouds_Summer.cmap",
+    "npy": "OAX/GOES-R/IR/ir_color_clouds_summer.npy",
+    "name": "IR_Color_Clouds_Summer",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/IR_Color_Clouds_Winter.cmap",
+    "npy": "OAX/GOES-R/IR/ir_color_clouds_winter.npy",
+    "name": "IR_Color_Clouds_Winter",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/Rainbow_11_bit.cmap",
+    "npy": "OAX/GOES-R/IR/rainbow_11_bit.npy",
+    "name": "Rainbow_11_bit",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/IR/ramsdis_IR_12bit.cmap",
+    "npy": "OAX/GOES-R/IR/ramsdis_ir_12bit.npy",
+    "name": "ramsdis_IR_12bit",
+    "n_colors": 4096
+  },
+  {
+    "source": "OAX/GOES-R/IR/ramsdis_WV_12bit.cmap",
+    "npy": "OAX/GOES-R/IR/ramsdis_wv_12bit.npy",
+    "name": "ramsdis_WV_12bit",
+    "n_colors": 4096
+  },
+  {
+    "source": "OAX/GOES-R/IR/WV_Dry_Yellow.cmap",
+    "npy": "OAX/GOES-R/IR/wv_dry_yellow.npy",
+    "name": "WV_Dry_Yellow",
+    "n_colors": 2048
+  },
+  {
+    "source": "OAX/GOES-R/Lifted Index/Lifted Index - New CIMSS Table.cmap",
+    "npy": "OAX/GOES-R/Lifted Index/lifted_index_-_new_cimss_table.npy",
+    "name": "Lifted Index - New CIMSS Table",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Lifted Index/Lifted Index Default.cmap",
+    "npy": "OAX/GOES-R/Lifted Index/lifted_index_default.npy",
+    "name": "Lifted Index Default",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Precip/Blended Total Precip Water.cmap",
+    "npy": "OAX/GOES-R/Precip/blended_total_precip_water.npy",
+    "name": "Blended Total Precip Water",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Precip/Percent of Normal TPW.cmap",
+    "npy": "OAX/GOES-R/Precip/percent_of_normal_tpw.npy",
+    "name": "Percent of Normal TPW",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Precip/Precip Water - New CIMSS Table.cmap",
+    "npy": "OAX/GOES-R/Precip/precip_water_-_new_cimss_table.npy",
+    "name": "Precip Water - New CIMSS Table",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Precip/Precip Water - Polar.cmap",
+    "npy": "OAX/GOES-R/Precip/precip_water_-_polar.npy",
+    "name": "Precip Water - Polar",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Precip/Precip Water Default.cmap",
+    "npy": "OAX/GOES-R/Precip/precip_water_default.npy",
+    "name": "Precip Water Default",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Skin Temp/Skin Temp - New CIMSS Table.cmap",
+    "npy": "OAX/GOES-R/Skin Temp/skin_temp_-_new_cimss_table.npy",
+    "name": "Skin Temp - New CIMSS Table",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/Skin Temp/Skin Temp Default.cmap",
+    "npy": "OAX/GOES-R/Skin Temp/skin_temp_default.npy",
+    "name": "Skin Temp Default",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/VIS/CA (Low Light Vis).cmap",
+    "npy": "OAX/GOES-R/VIS/ca_low_light_vis.npy",
+    "name": "CA (Low Light Vis)",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/VIS/Linear.cmap",
+    "npy": "OAX/GOES-R/VIS/linear.npy",
+    "name": "Linear",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/VIS/VIS_gray_sq-root-12.cmap",
+    "npy": "OAX/GOES-R/VIS/vis_gray_sq-root-12.npy",
+    "name": "VIS_gray_sq-root-12",
+    "n_colors": 4097
+  },
+  {
+    "source": "OAX/GOES-R/VIS/ZA (Vis Default).cmap",
+    "npy": "OAX/GOES-R/VIS/za_vis_default.npy",
+    "name": "ZA (Vis Default)",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/WV/Gray Scale Water Vapor.cmap",
+    "npy": "OAX/GOES-R/WV/gray_scale_water_vapor.npy",
+    "name": "Gray Scale Water Vapor",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/WV/NSSL VAS (WV Alternate).cmap",
+    "npy": "OAX/GOES-R/WV/nssl_vas_wv_alternate.npy",
+    "name": "NSSL VAS (WV Alternate)",
+    "n_colors": 256
+  },
+  {
+    "source": "OAX/GOES-R/WV/SLC WV.cmap",
+    "npy": "OAX/GOES-R/WV/slc_wv.npy",
+    "name": "SLC WV",
+    "n_colors": 256
+  }
+]

@@ -1,0 +1,21 @@
+sensor_name: visir/fci
+
+composites:
+  ir_cira:
+    description: IR 10.5um con palette CIRA (IR Default) da UW-SIFT/OAX
+    compositor: !!python/name:satpy.composites.core.SingleBandCompositor
+    standard_name: oax_cira_ir_default
+    prerequisites:
+      - ir_105
+  ir_rainbow:
+    description: IR 10.5um con palette enhanced-rainbow-11 da UW-SIFT/OAX
+    compositor: !!python/name:satpy.composites.core.SingleBandCompositor
+    standard_name: oax_enhanced_rainbow_11
+    prerequisites:
+      - ir_105
+  wv_gray:
+    description: WV 7.3um con palette Gray Scale Water Vapor da UW-SIFT/OAX
+    compositor: !!python/name:satpy.composites.core.SingleBandCompositor
+    standard_name: oax_gray_scale_water_vapor
+    prerequisites:
+      - wv_73
