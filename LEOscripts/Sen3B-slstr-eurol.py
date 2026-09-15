@@ -13,7 +13,7 @@
 #
 #*************************************************************************
 
-import os, sys, glob, tarfile, shutil, warnings, subprocess
+import os, sys, glob, re, tarfile, shutil, warnings, subprocess
 import netCDF4
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -89,7 +89,12 @@ for tf in tarfiles:
     try:
         with tarfile.open(tf) as tar:
             tar.extractall(path=tmpdir)
-        nc = glob.glob(f'{tiledir}/*.nc')
+        # satpy/ghrsst_l2.yaml definisce sea_surface_temperature solo per la
+        # vista 'nadir': i file *_DUAL_* non producono questo dataset e,
+        # mischiati ai *_NADIR_* nella stessa Scene, mandano in confusione
+        # l'assegnazione dei file dopo il resample (available_dataset_names
+        # vuoto / dataset introvabile). Teniamo solo i NADIR.
+        nc = glob.glob(f'{tiledir}/*NADIR*.nc')
         kept = [f for f in nc if nc_overlaps_eurol(f)]
         if kept:
             ncfiles.extend(kept)
@@ -104,6 +109,36 @@ if not ncfiles:
     shutil.rmtree(tmpdir, ignore_errors=True)
     sys.exit('No NC files overlap eurol area')
 print(f'[Sen3B-slstr] Kept {len(ncfiles)} NC file(s) overlapping eurol')
+
+# I file "NRT" hanno un infisso '-NRT_NADIR_'/'-NRT_DUAL_' tra il tag vista
+# (SLSTRB) e il secondo timestamp che il file_pattern di satpy/ghrsst_l2.yaml
+# non prevede (si aspetta 'SLSTRB-{dt2}-{version}.nc' senza infisso), quindi
+# il reader non riconosce questi file. Li rinominiamo (siamo in una tmpdir
+# usa-e-getta) rimuovendo l'infisso per farli combaciare col pattern atteso.
+renamed = []
+for f in ncfiles:
+    base = os.path.basename(f)
+    new_base = re.sub(r'-NRT_(NADIR|DUAL)_', '-', base)
+    if new_base != base:
+        newpath = os.path.join(os.path.dirname(f), new_base)
+        os.rename(f, newpath)
+        renamed.append(newpath)
+    else:
+        renamed.append(f)
+ncfiles = renamed
+
+# Questa baseline di processing (GDS 2.1 / NRT) usa gli attributi globali
+# ACDD 'time_coverage_start'/'time_coverage_end' (ISO), ma il reader
+# satpy/ghrsst_l2 si aspetta 'start_time'/'stop_time' in formato compatto
+# '%Y%m%dT%H%M%SZ' (baseline GDS 1 piu' vecchia): senza patch, FileHandler
+# fallisce con AttributeError. Aggiungiamo gli attributi mancanti in-place.
+for f in ncfiles:
+    with netCDF4.Dataset(f, 'a') as ds:
+        if 'start_time' not in ds.ncattrs():
+            dt_s = datetime.strptime(ds.getncattr('time_coverage_start'), '%Y-%m-%dT%H:%M:%S')
+            dt_e = datetime.strptime(ds.getncattr('time_coverage_end'), '%Y-%m-%dT%H:%M:%S')
+            ds.setncattr('start_time', dt_s.strftime('%Y%m%dT%H%M%SZ'))
+            ds.setncattr('stop_time', dt_e.strftime('%Y%m%dT%H%M%SZ'))
 
 print(f'[Sen3B-slstr] Loading {len(ncfiles)} NC file(s) with ghrsst_l2')
 
