@@ -16,7 +16,7 @@ segdir  = '/home/sps/received/hvs-2/E2H-MTG-1'
 isbulk  = True    # Files flat in channel dir (no YYYY/mm/DD subdirs)
 decomp  = False
 
-composites = ['colorized_ir_clouds', 'airmass', 'dust']
+composites = ['colorized_ir_clouds', 'airmass', 'dust', 'ir_cira', 'wv_gray']
 
 areas = ['fci_0deg_2km', 'eurol1']    # full disk + European detail (eurol1: ~0.77km/px vs eurol 3km/px)
 

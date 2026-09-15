@@ -16,7 +16,7 @@ segdir  = '/home/sps/received/bas/E1B-GEO-5'
 isbulk  = True    # Files flat in channel dir (no YYYY/mm/DD subdirs)
 decomp  = False
 
-composites = ['airmass', 'colorized_ir_clouds', 'overview', 'natural_color', 'dust']
+composites = ['airmass', 'colorized_ir_clouds', 'overview', 'natural_color', 'dust', 'ir_cira', 'wv_gray']
 
 areas = ['eurol']    # RSS covers EU only - no full disk area
 
