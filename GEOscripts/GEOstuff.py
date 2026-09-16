@@ -33,10 +33,31 @@ except ImportError:
 # h5netcdf-only (built on h5py) avoids that. It then hits a second, smaller bug: for
 # scalar (0-d) variables, `v[:]` raises ValueError under h5netcdf but IndexError under
 # netCDF4, and satpy's scalar-handling fallback only catches IndexError.
+#
+# Scoped to FCIL1cNCFileHandler only (not the shared NetCDF4FsspecFileHandler base
+# class): other readers such as MTG Lightning Imager (MTILI, li_l2_nc) also derive
+# from that base class and their Variable objects lack the .size attribute that
+# h5netcdf's engine (unlike netCDF4's) doesn't provide, so patching the base class
+# globally broke them. FCIL1cNCFileHandler.__init__ doesn't forward **kwargs down to
+# NetCDF4FsspecFileHandler.__init__, so we can't pass engine='h5netcdf' through
+# normally; instead we flip the shared class's default just for the duration of the
+# FCI file handler's own __init__ call (file handlers are created one at a time in a
+# plain for-loop, never concurrently, so this is safe) and restore it right after.
 try:
     import xarray as _xr
+    from satpy.readers.fci_l1c_nc import FCIL1cNCFileHandler as _FCIFH
     from satpy.readers.core.netcdf import NetCDF4FsspecFileHandler as _NC4FsspecFH
-    _NC4FsspecFH.__init__.__kwdefaults__['engine'] = 'h5netcdf'
+
+    _orig_fci_init = _FCIFH.__init__
+    _stock_engine_default = _NC4FsspecFH.__init__.__kwdefaults__['engine']
+
+    def _fci_init_h5netcdf(self, *args, **kwargs):
+        _NC4FsspecFH.__init__.__kwdefaults__['engine'] = 'h5netcdf'
+        try:
+            return _orig_fci_init(self, *args, **kwargs)
+        finally:
+            _NC4FsspecFH.__init__.__kwdefaults__['engine'] = _stock_engine_default
+    _FCIFH.__init__ = _fci_init_h5netcdf
 
     def _get_and_cache_npxr_h5netcdf_safe(self, var_name):
         if var_name in self.cached_file_content:
@@ -56,7 +77,7 @@ try:
                 val = v
         self.cached_file_content[var_name] = val
         return val
-    _NC4FsspecFH.get_and_cache_npxr = _get_and_cache_npxr_h5netcdf_safe
+    _FCIFH.get_and_cache_npxr = _get_and_cache_npxr_h5netcdf_safe
 except Exception:
     pass  # If satpy internals change, fall back to stock (possibly crash-prone) behavior
 
