@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-# Wrapper cron per DWDSAT-overlays.py — processa overlay DWD MSLP da E1B-DWDSAT
-# Cron: 15 * * * *  (ogni ora, 15 minuti dopo l ora)
-import subprocess, logging
+# Wrapper cron per DWDSAT-overlays.py — processa overlay DWD/UKMO MSLP da E1B-DWDSAT,
+# poi genera subito i chart con gli slot appena arrivati (event-driven, niente orario
+# stimato: il canale satellitare arriva quando arriva, non secondo un nostro schema).
+# Cron: 15 * * * *  (ogni ora, 15 minuti dopo l'ora)
+import sys
+sys.path.insert(0, "/home/sps/SPStools/cron")
+from mslp_common import run, latest_slot, run_chart_script
 
-logging.basicConfig(filename="/home/sps/SPSdata/cron.log", level=logging.INFO,
-                    format="%(asctime)s %(message)s")
-
-logging.info("DWDSAT overlays start")
-r = subprocess.run(
+run(
     ["/home/sps/miniconda3/envs/pytroll/bin/python3",
      "/home/sps/SPStools/cmdfiles/DWDSAT-overlays.py"],
-    capture_output=True, text=True,
-    cwd="/home/sps/received/bas/E1B-DWDSAT"
+    "DWDSAT overlays",
+    cwd="/home/sps/received/bas/E1B-DWDSAT",
 )
-logging.info(f"DWDSAT overlays done rc={r.returncode}")
-if r.stdout.strip():
-    logging.info(f"DWDSAT stdout: {r.stdout.strip()[-500:]}")
-if r.returncode != 0:
-    logging.error(f"DWDSAT stderr: {r.stderr[-500:]}")
+
+# Slot esatto dell'overlay (lo snap al minuto MSG3 reale avviene dentro gli script)
+run_chart_script("MSG4-MSLP-dwdx.py", latest_slot("dwda"), "DWDSAT MSLP chart (dwda/dwdn/dwdc/dwdi)")
+run_chart_script("MSG4-MSLP-ukmox.py", latest_slot("ukmox"), "DWDSAT MSLP chart (ukmox/ukmos/ukmol)")

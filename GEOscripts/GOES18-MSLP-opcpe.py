@@ -53,7 +53,7 @@ sat, Dat, Yea, Mon, Day, Hou, Min = test_argv()
 
 if OS == 'Linux':
     segdir = '/home/sps/received/hvs-1/E1H-TPG-4'
-    isbulk = False
+    isbulk = True    # Files flat in channel dir (no YYYY/mm/DD subdirs)
 elif OS == 'Windows':
     segdir = 'Z:/E1H-TPG-4'
     isbulk = False

@@ -62,6 +62,17 @@ elif OS == 'Windows':
 else:
     sys.exit('Sorry, OS ' + OS + ' seems unsupported yet ...')
 
+# MSG3 su questo canale trasmette SOLO a :15/:45, mai a :00/:30: la chart MSLP
+# arriva con uno slot 'tondo' (es. :00) che i dati satellite non avranno mai
+# esattamente. Agganciamo qui SOLO Min (usato per cercare i dati satellite in
+# geo_images), lasciando Dat invariato: get_lists() deve trovare l'overlay col
+# nome esatto con cui e' stato scaricato/generato (che resta a :00).
+from glob import glob as _glob
+for _mm in ('15', '45', '00', '30'):
+    if _glob(segdir + '/H-000-' + sat + '*EPI*' + Yea + Mon + Day + Hou + _mm + '*'):
+        Min = _mm
+        break
+
 # Your TC receiver type
 receiver = 'TBS-6909X'
 

@@ -106,7 +106,11 @@ if do_dwdx:
     #       pos 42-45 = 'dwdc'/'dwdn';  pos 42-46 = 'dwdna';  pos 63-74 = YYYYMMDDHHmm
     for f in glob('Z__C_EDZW*dwd*WV12SW.png'):
         if f[42:47] == 'dwdna':
-            area, Dat = 'dwdna', f[64:76]   # dwdna has 1 extra char → date shifts +1
+            # Il canale trasmette 'dwdna' (North Atlantic) ma i consumer (es.
+            # MSG4-MSLP-dwdx.py) si aspettano l'area 'dwdn' (nome usato anche
+            # dalla pipeline web DWD OpenData per la stessa area): normalizziamo
+            # qui per evitare che i due nomi non si incontrino mai.
+            area, Dat = 'dwdn', f[64:76]   # dwdna has 1 extra char → date shifts +1
         elif f[42:46] in ('dwdc', 'dwdn'):
             area, Dat = f[42:46], f[63:75]
         else:
