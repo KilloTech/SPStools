@@ -2,14 +2,18 @@
 # Wrapper cron per GOES-18 full disk - slot ogni 10 minuti UTC
 # Cron: 7,17,27,37,47,57 * * * *  (offset 1 min da GOES19 per non sovrapporre I/O)
 # I 16 canali ABI full-disk completano l'arrivo via EUMETCast ~12-12.5 min dopo
-# l'inizio slot (verificato 2026-09-12). LOOKBACK=17 da margine di sicurezza.
+# l'inizio slot (verificato 2026-09-12), ma C02 (0.5km, ~4x i dati degli altri
+# canali, necessario per true_color) arriva sistematicamente piu' tardi, intorno
+# ai 14-15 min (verificato 2026-09-16 su GOES19) - con LOOKBACK=17 il margine era
+# troppo risicato e causava saltuari KeyError su true_color per C02 non ancora
+# arrivato.
 import subprocess, logging
 from datetime import datetime, timezone, timedelta
 
 logging.basicConfig(filename="/home/sps/SPSdata/cron.log", level=logging.INFO,
                     format="%(asctime)s %(message)s")
 
-LOOKBACK = 17
+LOOKBACK = 20
 INTERVAL = 10
 
 now_utc = datetime.now(timezone.utc) - timedelta(minutes=LOOKBACK)
