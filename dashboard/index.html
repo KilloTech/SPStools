@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPS Ops Console</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#f4f6fb;
+    --surface:#ffffff;
+    --surface-2:#eef1f8;
+    --border:#dbe1ee;
+    --text:#131a2b;
+    --text-dim:#5b6684;
+    --text-faint:#8892ab;
+    --accent:#0f8f82;
+    --accent-soft:#e3f3f1;
+    --good:#16a34a;
+    --good-soft:#e9f8ef;
+    --warn:#b45309;
+    --warn-soft:#fdf3e3;
+    --bad:#dc2626;
+    --bad-soft:#fdecec;
+    --idle:#94a1bd;
+    --idle-soft:#eef1f8;
+    --shadow: 0 1px 2px rgba(20,30,60,.04), 0 8px 24px -12px rgba(20,30,60,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0b1220; --surface:#111a2d; --surface-2:#17223a; --border:#28365a;
+      --text:#e8edf7; --text-dim:#93a1c2; --text-faint:#6a7796;
+      --accent:#4fd1c5; --accent-soft:#12302e;
+      --good:#34d399; --good-soft:#0f2b22;
+      --warn:#fbbf24; --warn-soft:#332507;
+      --bad:#f87171; --bad-soft:#33161a;
+      --idle:#5b6788; --idle-soft:#182238;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b1220; --surface:#111a2d; --surface-2:#17223a; --border:#28365a;
+    --text:#e8edf7; --text-dim:#93a1c2; --text-faint:#6a7796;
+    --accent:#4fd1c5; --accent-soft:#12302e;
+    --good:#34d399; --good-soft:#0f2b22;
+    --warn:#fbbf24; --warn-soft:#332507;
+    --bad:#f87171; --bad-soft:#33161a;
+    --idle:#5b6788; --idle-soft:#182238;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    padding-inline:20px; padding-block:20px 40px;
+    display:flex; flex-direction:column; gap:20px;
+    min-height:100vh;
+  }
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  ::selection{background:var(--accent-soft);}
+
+  header{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    max-width:1320px; margin-inline:auto; width:100%;
+  }
+  .brand{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .brand-mark{
+    width:38px; height:38px; border-radius:9px;
+    background:linear-gradient(155deg, var(--accent), color-mix(in srgb, var(--accent) 55%, transparent));
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .brand-mark svg{width:20px;height:20px;}
+  h1{font-size:1.05rem; font-weight:700; margin:0; letter-spacing:.01em;}
+  .brand-sub{font-size:.72rem; color:var(--text-faint); margin-top:1px; letter-spacing:.02em;}
+  .live-badge{
+    font-size:.65rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--good); background:var(--good-soft); border:1px solid color-mix(in srgb, var(--good) 35%, transparent);
+    padding:3px 8px; border-radius:99px; white-space:nowrap;
+    display:flex; align-items:center; gap:5px;
+  }
+  .live-badge .d{width:6px; height:6px; border-radius:99px; background:var(--good); animation:pulse2 2s ease-in-out infinite;}
+  .live-badge.stale{color:var(--warn); background:var(--warn-soft); border-color:color-mix(in srgb, var(--warn) 35%, transparent);}
+  .live-badge.stale .d{background:var(--warn); animation:none;}
+
+  .clock-block{text-align:right;}
+  .clock{font-family:'IBM Plex Mono',monospace; font-size:1.3rem; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:.02em;}
+  .clock-label{font-size:.68rem; color:var(--text-faint); letter-spacing:.05em; text-transform:uppercase;}
+
+  .summary{
+    max-width:1320px; margin-inline:auto; width:100%;
+    display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
+  }
+  @media (max-width:900px){ .summary{grid-template-columns:repeat(2,1fr);} }
+  .stat{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:14px 16px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:4px; min-width:0;
+  }
+  .stat-label{font-size:.68rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.06em; font-weight:600;}
+  .stat-value{font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.1;}
+  .stat-value.good{color:var(--good);}
+  .stat-value.warn{color:var(--warn);}
+  .stat-sub{font-size:.72rem; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+  .layout{
+    max-width:1320px; margin-inline:auto; width:100%;
+    display:grid; grid-template-columns:1fr 340px; gap:18px; align-items:start;
+  }
+  @media (max-width:1100px){ .layout{grid-template-columns:1fr;} }
+
+  .panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:14px 18px; border-bottom:1px solid var(--border);
+  }
+  .panel-title{font-size:.85rem; font-weight:600;}
+  .panel-title .count{color:var(--text-faint); font-weight:500;}
+
+  .groups{display:flex; flex-direction:column;}
+  .group + .group{border-top:1px solid var(--border);}
+  .group-head{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 18px; background:var(--surface-2);
+    font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim);
+  }
+  .group-head .dot{width:6px; height:6px; border-radius:99px; background:var(--accent);}
+  .group-head .n{margin-left:auto; font-family:'IBM Plex Mono',monospace; color:var(--text-faint); text-transform:none; letter-spacing:0;}
+
+  .job{
+    display:grid;
+    grid-template-columns:16px minmax(0,2fr) 88px 96px 110px 56px;
+    align-items:center; gap:10px;
+    padding:10px 18px;
+    border-top:1px solid var(--border);
+  }
+  .group .job:first-of-type{border-top:none;}
+  @media (max-width:860px){
+    .job{grid-template-columns:16px minmax(0,1fr) 88px; grid-template-areas:"dot name status" "dot meta meta" "dot hist hist"; row-gap:6px;}
+    .job .job-status{grid-area:status;}
+    .job .job-name-wrap{grid-area:name;}
+    .job .job-meta{grid-area:meta;}
+    .job .job-hist{grid-area:hist;}
+    .job .job-next{display:none;}
+  }
+
+  .status-dot{width:8px; height:8px; border-radius:99px; flex:none;}
+  .status-dot.ok{background:var(--good);}
+  .status-dot.fail{background:var(--bad);}
+  .status-dot.running{background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); animation:pulse 1.8s ease-in-out infinite;}
+  .status-dot.idle{background:var(--idle);}
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);}
+    50%{box-shadow:0 0 0 6px color-mix(in srgb, var(--accent) 10%, transparent);}
+  }
+  @media (prefers-reduced-motion: reduce){ .status-dot.running, .live-badge .d{animation:none;} }
+
+  .job-name{font-size:.83rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .job-chan{font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--text-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+  .job-status{display:flex;}
+  .pill{
+    font-size:.66rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    padding:3px 8px; border-radius:99px; white-space:nowrap;
+  }
+  .pill.ok{color:var(--good); background:var(--good-soft);}
+  .pill.fail{color:var(--bad); background:var(--bad-soft);}
+  .pill.running{color:var(--accent); background:var(--accent-soft);}
+  .pill.idle{color:var(--text-dim); background:var(--idle-soft);}
+
+  .job-meta{font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--text-dim); font-variant-numeric:tabular-nums;}
+  .job-meta .dur{color:var(--text-faint);}
+
+  .job-hist{display:flex; gap:2px;}
+  .hist-sq{width:7px; height:16px; border-radius:2px; flex:none;}
+  .hist-sq.ok{background:var(--good); opacity:.85;}
+  .hist-sq.fail{background:var(--bad);}
+  .hist-sq.none{background:var(--idle-soft);}
+
+  .job-next{font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--text-faint); text-align:right; font-variant-numeric:tabular-nums;}
+
+  .log-body{
+    padding:12px 16px; display:flex; flex-direction:column; gap:1px;
+    max-height:640px; overflow-y:auto;
+  }
+  .log-line{
+    font-family:'IBM Plex Mono',monospace; font-size:.71rem; line-height:1.65;
+    white-space:pre-wrap; word-break:break-word; color:var(--text-dim);
+  }
+  .log-line .t{color:var(--text-faint); margin-right:8px;}
+  .log-line.ok .job-tag{color:var(--good);}
+  .log-line.fail .job-tag{color:var(--bad);}
+  .log-line.info .job-tag{color:var(--accent);}
+  .job-tag{font-weight:600;}
+  .log-live-dot{
+    width:7px; height:7px; border-radius:99px; background:var(--good);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--good) 25%, transparent);
+    animation:pulse2 2s ease-in-out infinite;
+  }
+  @keyframes pulse2{
+    0%,100%{box-shadow:0 0 0 3px color-mix(in srgb, var(--good) 25%, transparent);}
+    50%{box-shadow:0 0 0 6px color-mix(in srgb, var(--good) 8%, transparent);}
+  }
+
+  .sidebar-stack{display:flex; flex-direction:column; gap:18px;}
+
+  .disk-row{padding:16px 18px; display:flex; flex-direction:column; gap:10px;}
+  .disk-line{display:flex; justify-content:space-between; font-size:.76rem; gap:8px;}
+  .disk-line .lbl{color:var(--text-dim);}
+  .disk-line .val{font-family:'IBM Plex Mono',monospace; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .bar{height:6px; border-radius:99px; background:var(--surface-2); overflow:hidden;}
+  .bar > i{display:block; height:100%; background:var(--accent); border-radius:99px;}
+
+  .empty{padding:24px 18px; color:var(--text-faint); font-size:.8rem; text-align:center;}
+
+  footer{
+    max-width:1320px; margin-inline:auto; width:100%;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    font-size:.7rem; color:var(--text-faint); padding-top:4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 13.5 10.5 20M9 4l4.5 4.5M13 3l8 8-3 3-8-8 3-3Z" stroke="#04211d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="1.6" fill="#04211d"/>
+      </svg>
+    </div>
+    <div>
+      <h1>SPS Ops Console</h1>
+      <div class="brand-sub">192.168.1.204 · EUMETCast processing · SatPy / PyTROLL</div>
+    </div>
+    <span class="live-badge" id="liveBadge"><span class="d"></span><span id="liveText">connessione…</span></span>
+  </div>
+  <div class="clock-block">
+    <div class="clock mono" id="clock">--:--:-- UTC</div>
+    <div class="clock-label" id="clockDate">—</div>
+  </div>
+</header>
+
+<section class="summary" id="summary">
+  <div class="stat"><span class="stat-label">Job attivi ora</span><span class="stat-value" id="statRunning">—</span><span class="stat-sub" id="statRunningSub">—</span></div>
+  <div class="stat"><span class="stat-label">Successo 24h</span><span class="stat-value" id="statSuccess">—</span><span class="stat-sub" id="statSuccessSub">—</span></div>
+  <div class="stat"><span class="stat-label">Falliti 24h</span><span class="stat-value warn" id="statFails">—</span><span class="stat-sub" id="statFailsSub">—</span></div>
+  <div class="stat"><span class="stat-label">Immagini generate 24h</span><span class="stat-value" id="statImages">—</span><span class="stat-sub" id="statImagesSub">—</span></div>
+  <div class="stat"><span class="stat-label">Prossimo job</span><span class="stat-value mono" id="statNext" style="font-size:1.15rem;">—</span><span class="stat-sub" id="statNextSub">—</span></div>
+</section>
+
+<div class="layout">
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Pipeline <span class="count" id="jobCount"></span></span></div>
+    <div class="groups" id="groups"><div class="empty">Caricamento…</div></div>
+  </div>
+
+  <div class="sidebar-stack">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">cron.log</span>
+        <span class="log-live-dot" title="aggiornamento live" aria-hidden="true"></span>
+      </div>
+      <div class="log-body" id="logBody"><div class="empty">Caricamento…</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Disco &amp; archivio</span></div>
+      <div class="disk-row" id="diskRow">
+        <div class="empty">Caricamento…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Aggiornato ogni 60s dallo status generato da <span class="mono">build_dashboard_status.py</span></span>
+  <span class="mono" id="footerGenAt">—</span>
+</footer>
+
+<script>
+(function(){
+  const REFRESH_MS = 30000;
+  const STATUS_URL = 'status.json';
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function tickClock(){
+    const d = new Date();
+    document.getElementById('clock').textContent =
+      pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC';
+    document.getElementById('clockDate').textContent =
+      d.toLocaleDateString('it-IT', {timeZone:'UTC', day:'2-digit', month:'short', year:'numeric'});
+  }
+  tickClock(); setInterval(tickClock, 1000);
+
+  function pillLabel(s){
+    return {ok:'OK', fail:'Errore', running:'In corso', idle:'In attesa'}[s] || s;
+  }
+
+  function esc(s){
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+
+  function renderJob(j){
+    const hist = (j.hist || []).map(h=>{
+      const cls = h===null ? 'none' : (h==='running' ? 'ok' : h);
+      return `<span class="hist-sq ${cls}" title="${h===null?'nessun dato':h}"></span>`;
+    }).join('');
+    return `
+      <div class="job">
+        <span class="status-dot ${j.status}" aria-hidden="true"></span>
+        <div class="job-name-wrap" style="min-width:0;">
+          <div class="job-name">${esc(j.name)}</div>
+          <div class="job-chan">${esc(j.chan)}</div>
+        </div>
+        <div class="job-status"><span class="pill ${j.status}">${pillLabel(j.status)}</span></div>
+        <div class="job-meta">${esc(j.last)}<br><span class="dur">${esc(j.dur)}</span></div>
+        <div class="job-hist">${hist}</div>
+        <div class="job-next">${esc(j.next)}</div>
+      </div>`;
+  }
+
+  function renderGroup(g){
+    if(!g.jobs.length) return '';
+    return `
+      <div class="group">
+        <div class="group-head"><span class="dot" aria-hidden="true"></span>${esc(g.label)}<span class="n">${g.jobs.length} job</span></div>
+        ${g.jobs.map(renderJob).join('')}
+      </div>`;
+  }
+
+  function renderDisk(data){
+    const d = data.disk || {};
+    const s = data.summary || {};
+    const rows = [];
+    if(d.root){
+      rows.push(`<div><div class="disk-line"><span class="lbl">/ (root)</span><span class="val">${d.root.used_gb} / ${d.root.total_gb} GB</span></div>
+        <div class="bar"><i style="width:${d.root.pct}%"></i></div></div>`);
+    }
+    if(d.sps_archive){
+      const warn = d.sps_archive.pct > 85;
+      rows.push(`<div><div class="disk-line"><span class="lbl">SPS_archive</span><span class="val">${d.sps_archive.used_gb} / ${d.sps_archive.total_gb} GB</span></div>
+        <div class="bar"><i style="width:${d.sps_archive.pct}%; ${warn?'background:var(--warn);':''}"></i></div></div>`);
+    }
+    rows.push(`<div class="disk-line" style="padding-top:2px;"><span class="lbl">Liberato oggi (S3)</span><span class="val" style="color:var(--good)">${s.s3_freed_today_gb ?? '—'} GB · ${s.s3_runs_today ?? 0} run</span></div>`);
+    document.getElementById('diskRow').innerHTML = rows.join('');
+  }
+
+  function renderLog(lines){
+    if(!lines || !lines.length){
+      document.getElementById('logBody').innerHTML = '<div class="empty">Nessun evento recente</div>';
+      return;
+    }
+    document.getElementById('logBody').innerHTML = lines.map(l =>
+      `<div class="log-line ${l.kind}"><span class="t">${esc(l.t)}</span><span class="job-tag">${esc(l.job)}</span> — ${esc(l.msg)}</div>`
+    ).join('');
+  }
+
+  function setLive(ok, label){
+    const b = document.getElementById('liveBadge');
+    b.classList.toggle('stale', !ok);
+    document.getElementById('liveText').textContent = label;
+  }
+
+  function render(data){
+    const s = data.summary || {};
+
+    document.getElementById('statRunning').textContent = s.running_count ?? '—';
+    document.getElementById('statRunningSub').textContent =
+      (s.running_now && s.running_now.length) ? s.running_now.join(' · ') : 'Nessuno al momento';
+
+    document.getElementById('statSuccess').textContent = s.success_rate_24h != null ? s.success_rate_24h + '%' : '—';
+    document.getElementById('statSuccessSub').textContent =
+      s.total_runs_24h != null ? `${s.total_runs_24h - (s.total_fails_24h||0)} / ${s.total_runs_24h} esecuzioni` : '—';
+
+    document.getElementById('statFails').textContent = s.total_fails_24h ?? '—';
+    document.getElementById('statFailsSub').textContent = 'nelle ultime 24h';
+
+    document.getElementById('statImages').textContent = (s.images_24h ?? 0).toLocaleString('it-IT');
+    document.getElementById('statImagesSub').textContent = 'file .jpg/.png prodotti';
+
+    if(s.next_job){
+      document.getElementById('statNext').textContent = s.next_job.in;
+      document.getElementById('statNextSub').textContent = `${s.next_job.name} · ${s.next_job.at}`;
+    } else {
+      document.getElementById('statNext').textContent = '—';
+      document.getElementById('statNextSub').textContent = '—';
+    }
+
+    const groups = data.groups || [];
+    const html = groups.map(renderGroup).join('');
+    document.getElementById('groups').innerHTML = html || '<div class="empty">Nessun job configurato</div>';
+    const total = groups.reduce((n,g)=>n+g.jobs.length, 0);
+    document.getElementById('jobCount').textContent = `— ${total} job configurati`;
+
+    renderDisk(data);
+    renderLog(data.log_tail);
+
+    if(data.generated_at){
+      const gen = new Date(data.generated_at);
+      document.getElementById('footerGenAt').textContent =
+        'status.json generato alle ' + gen.toISOString().slice(11,19) + ' UTC';
+      const ageSec = (Date.now() - gen.getTime()) / 1000;
+      setLive(ageSec < 150, ageSec < 150 ? 'live' : 'dati non aggiornati');
+    }
+  }
+
+  async function refresh(){
+    try{
+      const res = await fetch(STATUS_URL, {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      render(data);
+    }catch(err){
+      setLive(false, 'connessione persa');
+      console.error('dashboard refresh failed', err);
+    }
+  }
+
+  refresh();
+  setInterval(refresh, REFRESH_MS);
+})();
+</script>
+</body>
+</html>
