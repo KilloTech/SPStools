@@ -76,6 +76,7 @@ JOBS = [
     ("DWDSAT overlays",                       "MSLP", "Overlay DWD/UKMO da satellite", "E1B-DWDSAT",      "15 * * * *"),
     ("DWDSAT MSLP chart (dwda/dwdn/dwdc/dwdi)","MSLP", "Chart DWD da satellite",        "MSG3",            "15 * * * *"),
     ("DWDSAT MSLP chart (ukmox/ukmos/ukmol)", "MSLP", "Chart UKMO da satellite",       "MSG3",            "15 * * * *"),
+    ("DWD forecast",                          "MSLP", "Carte previsionali DWD (ps401)", "E1B-DWDSAT",     "*/15 * * * *"),
 
     # ---- Manutenzione ----
     ("S3 archive",         "MAINT", "Archiviazione su Cubbit S3",  "s3.cubbit.eu", "45 0,6,12,18 * * *"),
