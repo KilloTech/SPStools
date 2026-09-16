@@ -24,6 +24,42 @@ try:
 except ImportError:
     from satpy.writers import compute_writer_results
 
+# MTI1 (MTG FCI) reads: work around a crash reading zstd/blosc-compressed FCI chunks.
+# Satpy's fci_l1c_nc reader defaults to trying the netCDF4 engine first; netCDF4 uses
+# its own separate libhdf5 instance that never gets hdf5plugin's filter registration
+# (only h5py's does, via `import hdf5plugin` above), so decoding a compressed FCI
+# dataset with it segfaults the whole process instead of raising a catchable error -
+# the built-in netcdf4->h5netcdf engine fallback never gets a chance to run. Forcing
+# h5netcdf-only (built on h5py) avoids that. It then hits a second, smaller bug: for
+# scalar (0-d) variables, `v[:]` raises ValueError under h5netcdf but IndexError under
+# netCDF4, and satpy's scalar-handling fallback only catches IndexError.
+try:
+    import xarray as _xr
+    from satpy.readers.core.netcdf import NetCDF4FsspecFileHandler as _NC4FsspecFH
+    _NC4FsspecFH.__init__.__kwdefaults__['engine'] = 'h5netcdf'
+
+    def _get_and_cache_npxr_h5netcdf_safe(self, var_name):
+        if var_name in self.cached_file_content:
+            return self.cached_file_content[var_name]
+        v = self.file_content[var_name]
+        if isinstance(v, _xr.DataArray):
+            val = v
+        else:
+            try:
+                val = v[:]
+                val = _xr.DataArray(val, dims=v.dimensions,
+                                    attrs=self.accessor.get_object_attrs(v), name=v.name)
+            except (IndexError, ValueError):
+                val = v.__array__().item()
+                val = _xr.DataArray(val, dims=(), attrs={}, name=var_name)
+            except AttributeError:
+                val = v
+        self.cached_file_content[var_name] = val
+        return val
+    _NC4FsspecFH.get_and_cache_npxr = _get_and_cache_npxr_h5netcdf_safe
+except Exception:
+    pass  # If satpy internals change, fall back to stock (possibly crash-prone) behavior
+
 OS = platform.system()
 
 
@@ -254,7 +290,7 @@ abi_abbr = { \
     'snow_fog': ('snow_fog', 0, 0, 0, 0, 0, 0, 0, 0, 0),
     'so2': ('so2', 0, 0, 0, 0, 0, 0, 0, 0, 0),
     'tropical_airmass': ('tropical_am', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-    'true_color': ('true_color', 0, 0, 0, 0, 0, 0, 0, 0, 1),
+    'true_color': ('true_color', 0, 0, 0, 0, 0, 0, 0, 0, 0),
     'true_color_crefl': ('true_col_cre', 0, 0, 0, 0, 0, 0, 0, 0, 0),
     'true_color_nocorr': ('true_col_noc', 0, 0, 0, 0, 0, 0, 0, 0, 0),
     'true_color_raw': ('true_col_raw', 0, 0, 0, 0, 0, 0, 0, 0, 0),
