@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Wrapper cron per NOAA-20 DAY pass - eurol area
-# LTAN=13:30 => pass EU ~13:00 UTC; cron: 15 13 * * *
+# Ideale (calcolato da leo_images) ~12:42 UTC; cron: 30 14 * * * (era 15 13,
+# margine insufficiente: falliva quasi ogni giorno con "no good files found",
+# verificato 2026-09-17)
 import subprocess, logging
 from datetime import datetime, timezone
 

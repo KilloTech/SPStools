@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Wrapper cron per Suomi-NPP NIG pass - eurol area
-# Night descending pass over EU ~01:15 UTC; cron: 30 1 * * *
+# Ideale (calcolato da leo_images) ~02:01 UTC; cron: 15 3 * * * (era 30 1,
+# ESEGUITO PRIMA del passaggio stesso: falliva sempre, verificato 2026-09-17)
 import subprocess, logging
 from datetime import datetime, timezone
 

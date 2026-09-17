@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Wrapper cron per NOAA-20 NIG pass - eurol area
-# Night descending pass over EU ~01:30 UTC; cron: 45 1 * * *
+# Ideale (calcolato da leo_images) ~02:01 UTC; cron: 30 3 * * * (era 45 1,
+# ESEGUITO PRIMA del passaggio stesso: falliva sempre, verificato 2026-09-17)
 import subprocess, logging
 from datetime import datetime, timezone
 

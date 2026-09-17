@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Wrapper cron per Suomi-NPP DAY pass - eurol area
-# LTAN=13:25 => pass EU ~12:55 UTC; cron: 10 13 * * *
+# Ideale (calcolato da leo_images) ~12:42 UTC; cron: 15 14 * * * (era 10 13,
+# margine insufficiente: falliva quasi ogni giorno con "no good files found",
+# verificato 2026-09-17)
 import subprocess, logging
 from datetime import datetime, timezone
 
