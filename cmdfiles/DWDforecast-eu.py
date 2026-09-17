@@ -63,7 +63,9 @@ for lt in leadtimes:
         continue
 
     tmp_path = out_path + '.tmp.jpg'
-    r = subprocess.run([convert, newest, tmp_path], capture_output=True, text=True)
+    # Source chart is native portrait (502x640, DWD's own "Euro640" format);
+    # rotate to landscape for the dashboard/products view.
+    r = subprocess.run([convert, newest, '-rotate', '90', tmp_path], capture_output=True, text=True)
     if r.returncode == 0 and os.path.exists(tmp_path):
         os.replace(tmp_path, out_path)
         produced.append(out_name)

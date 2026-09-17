@@ -211,6 +211,18 @@
 
   .sidebar-stack{display:flex; flex-direction:column; gap:18px;}
 
+  .alerts-body{padding:6px 18px 16px; display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;}
+  .alert-card{border-radius:10px; padding:10px 12px; border:1px solid var(--border); background:var(--surface-2);}
+  .alert-card.active{border-color:color-mix(in srgb, var(--bad) 45%, var(--border)); background:var(--bad-soft);}
+  .alert-head{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+  .alert-badge{font-size:.64rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:2px 7px; border-radius:99px; white-space:nowrap;}
+  .alert-badge.active{color:var(--bad); background:color-mix(in srgb, var(--bad) 18%, transparent);}
+  .alert-badge.resolved{color:var(--good); background:var(--good-soft);}
+  .alert-num{font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--text-faint);}
+  .alert-sats{font-size:.72rem; font-weight:600; margin-left:auto; color:var(--text-dim); text-align:right;}
+  .alert-detail{font-size:.76rem; color:var(--text); line-height:1.4;}
+  .alert-meta{font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--text-faint); margin-top:4px;}
+
   .disk-row{padding:16px 18px; display:flex; flex-direction:column; gap:10px;}
   .disk-line{display:flex; justify-content:space-between; font-size:.76rem; gap:8px;}
   .disk-line .lbl{color:var(--text-dim);}
@@ -264,6 +276,13 @@
   </div>
 
   <div class="sidebar-stack">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Avvisi EUMETSAT <span class="count" id="alertCount"></span></span>
+      </div>
+      <div class="alerts-body" id="alertsBody"><div class="empty">Caricamento…</div></div>
+    </div>
+
     <div class="panel">
       <div class="panel-head">
         <span class="panel-title">cron.log</span>
@@ -339,6 +358,41 @@
       </div>`;
   }
 
+  function fmtAlertTime(iso){
+    if(!iso) return '';
+    const d = new Date(iso.endsWith('Z') ? iso : iso + 'Z');
+    if(isNaN(d)) return iso;
+    return d.toLocaleDateString('it-IT', {timeZone:'UTC', day:'2-digit', month:'2-digit'}) + ' '
+         + d.toLocaleTimeString('it-IT', {timeZone:'UTC', hour:'2-digit', minute:'2-digit'}) + ' UTC';
+  }
+
+  function renderAlerts(data){
+    const a = data.eumetsat_alerts || {items:[], active_count:0};
+    document.getElementById('alertCount').textContent = a.active_count
+      ? `— ${a.active_count} in corso` : (a.items.length ? '— tutto risolto' : '');
+    if(!a.items.length){
+      document.getElementById('alertsBody').innerHTML = '<div class="empty">Nessun avviso negli ultimi 7 giorni</div>';
+      return;
+    }
+    document.getElementById('alertsBody').innerHTML = a.items.map(it => {
+      const who = (it.satellites && it.satellites.length) ? it.satellites.join(', ')
+                : (it.services && it.services.length) ? it.services.join(', ') : '';
+      const period = it.active
+        ? `dal ${fmtAlertTime(it.start_time)}`
+        : `${fmtAlertTime(it.start_time)} → ${fmtAlertTime(it.end_time)}`;
+      return `
+        <div class="alert-card ${it.active ? 'active' : ''}">
+          <div class="alert-head">
+            <span class="alert-badge ${it.active ? 'active' : 'resolved'}">${it.active ? 'In corso' : 'Risolto'}</span>
+            <span class="alert-num">#${esc(it.ann_number)}</span>
+            <span class="alert-sats">${esc(who)}</span>
+          </div>
+          <div class="alert-detail">${esc(it.detail || it.subject)}</div>
+          <div class="alert-meta">${period} · ${esc(it.impact)}</div>
+        </div>`;
+    }).join('');
+  }
+
   function renderDisk(data){
     const d = data.disk || {};
     const s = data.summary || {};
@@ -404,6 +458,7 @@
     document.getElementById('jobCount').textContent = `— ${total} job configurati`;
 
     renderDisk(data);
+    renderAlerts(data);
     renderLog(data.log_tail);
 
     if(data.generated_at){

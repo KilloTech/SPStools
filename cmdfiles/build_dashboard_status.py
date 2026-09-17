@@ -19,6 +19,7 @@ from datetime import datetime, timedelta, timezone
 
 CRON_LOG = "/home/sps/SPSdata/cron.log"
 S3_LOG = "/home/sps/SPSdata/s3_archive.log"
+ALERTS_STORE = "/home/sps/SPSdata/eumetsat_alerts.json"
 PRODUCTS_DIR = "/home/sps/SPSdata/products"
 OUT_DIR = "/home/sps/SPSdata/dashboard"
 OUT_FILE = OUT_DIR + "/status.json"
@@ -80,6 +81,7 @@ JOBS = [
 
     # ---- Manutenzione ----
     ("S3 archive",         "MAINT", "Archiviazione su Cubbit S3",  "s3.cubbit.eu", "45 0,6,12,18 * * *"),
+    ("EUMETSAT alerts",    "MAINT", "Archivio service alert",      "E1B-Info-Channel-2", "*/10 * * * *"),
 ]
 
 DISPLAY_OVERRIDES = {
@@ -369,6 +371,38 @@ def images_last_24h(now):
     return count
 
 
+def eumetsat_alerts():
+    # Storico gia' filtrato a 7 giorni da eumetsat_alerts.py; qui solo lettura e ordinamento.
+    if not os.path.exists(ALERTS_STORE):
+        return [], 0
+    try:
+        with open(ALERTS_STORE, encoding="utf-8") as f:
+            store = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return [], 0
+
+    items = []
+    active_count = 0
+    for rec in store.values():
+        is_active = rec.get("status") not in ("recovered", "closed", "resolved")
+        if is_active:
+            active_count += 1
+        items.append({
+            "ann_number": rec.get("ann_number", ""),
+            "status": rec.get("status", ""),
+            "active": is_active,
+            "impact": rec.get("impact", ""),
+            "subject": rec.get("subject", ""),
+            "satellites": rec.get("satellites", []),
+            "services": rec.get("services", []),
+            "detail": rec.get("detail", ""),
+            "start_time": rec.get("start_time", ""),
+            "end_time": rec.get("end_time", ""),
+        })
+    items.sort(key=lambda r: r["start_time"], reverse=True)
+    return items, active_count
+
+
 def main():
     now = datetime.now(timezone.utc)
     since = now - timedelta(hours=LOOKBACK_HOURS)
@@ -404,6 +438,7 @@ def main():
     success_rate = round(100 * (total_runs - total_fails) / total_runs, 1) if total_runs else None
 
     freed_gb, s3_runs_today = s3_freed_today(now)
+    alert_items, alert_active_count = eumetsat_alerts()
 
     # ultime righe di log "pulite" (solo eventi start/done riconosciuti) per il tail
     tail = []
@@ -436,6 +471,7 @@ def main():
             "images_24h": images_last_24h(now),
             "s3_freed_today_gb": freed_gb,
             "s3_runs_today": s3_runs_today,
+            "eumetsat_alerts_active": alert_active_count,
             "next_job": next_job,
         },
         "disk": {
@@ -447,6 +483,10 @@ def main():
             for g in GROUP_ORDER
         ],
         "log_tail": log_tail,
+        "eumetsat_alerts": {
+            "active_count": alert_active_count,
+            "items": alert_items,
+        },
     }
 
     os.makedirs(OUT_DIR, exist_ok=True)
